@@ -183,6 +183,65 @@
     .empty-text{font-size:13px;line-height:1.9}
     ::-webkit-scrollbar{width:3px}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+    /* ── WEEK VIEW ── */
+    .week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .week-title{font-size:15px;font-weight:900;color:var(--text)}
+    .week-rows{display:flex;flex-direction:column;gap:5px}
+    .week-row{background:#fff;border-radius:var(--rs);padding:9px 11px;box-shadow:var(--shadow);display:flex;align-items:center;gap:9px;cursor:pointer}
+    .week-row:active{background:var(--pl)}
+    .week-row.today-row{border:2px solid var(--primary)}
+    .week-day{width:34px;flex-shrink:0}
+    .week-dow{font-size:10px;font-weight:700;color:var(--muted)}
+    .week-date{font-size:18px;font-weight:900;color:var(--text);line-height:1.1}
+    .week-date.sun{color:#F87171}
+    .week-date.sat{color:#60A5FA}
+    .week-date.today-num{background:var(--primary);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:14px}
+    .week-bar-wrap{flex:1;position:relative;height:18px;background:#F5F0FF;border-radius:4px;overflow:hidden}
+    .week-bar-seg{position:absolute;top:0;height:100%;border-radius:2px}
+    .week-free-badge{font-size:9px;font-weight:700;color:var(--muted);width:32px;text-align:right;flex-shrink:0}
+    .week-event-dots{display:flex;gap:2px;margin-top:3px;flex-wrap:wrap}
+    .week-event-dot{width:5px;height:5px;border-radius:50%}
+
+    /* ── CAL TOGGLE ── */
+    .cal-toggle{display:flex;background:var(--bg);border-radius:var(--rs);padding:3px;margin-bottom:12px}
+    .cal-toggle-btn{flex:1;padding:6px;border:none;background:none;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
+    .cal-toggle-btn.on{background:#fff;color:var(--primary);box-shadow:0 2px 6px rgba(0,0,0,.1)}
+
+    /* ── POMODORO MODAL ── */
+    .pomo-task-row{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:var(--rs);padding:10px 13px;margin-bottom:18px}
+    .pomo-task-name{font-size:14px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .pomo-ring-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:18px}
+    .pomo-time{font-size:42px;font-weight:900;color:var(--text);letter-spacing:-1px;margin-top:6px}
+    .pomo-sub{font-size:11px;color:var(--muted);margin-top:2px}
+    .pomo-break-row{background:#FEF3C7;border-radius:var(--rs);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .pomo-break-time{font-size:18px;font-weight:900;color:#92400E}
+    .pomo-btns{display:flex;gap:8px;margin-bottom:8px}
+    .pomo-btn{flex:1;padding:12px 6px;border:none;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+    .pomo-btn.primary{background:var(--primary);color:#fff}
+    .pomo-btn.secondary{background:var(--bg);color:var(--text);border:1.5px solid var(--border)}
+    .pomo-btn.done{background:linear-gradient(135deg,#C4B5FD,#F9A8D4);color:#fff}
+    .pomo-btn.start-big{flex:unset;width:100%;padding:16px;font-size:16px;background:linear-gradient(135deg,#C4B5FD,#F9A8D4);color:#fff;border-radius:var(--r)}
+    .pomo-picker{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;max-height:200px;overflow-y:auto}
+    .pomo-task-chip{background:#fff;border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 13px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;text-align:left;display:flex;align-items:center;gap:8px}
+    .pomo-task-chip.on{border-color:var(--primary);background:var(--pl);color:var(--primary)}
+    .pomo-custom-input{margin-top:4px}
+
+    /* ── CONFIRM DIALOG ── */
+    .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;animation:fi .15s}
+    .confirm-box{background:#fff;border-radius:var(--r);padding:22px 20px;width:100%;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.18)}
+    .confirm-title{font-size:15px;font-weight:900;margin-bottom:8px}
+    .confirm-msg{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px}
+    .confirm-btns{display:flex;gap:8px}
+    .confirm-btn-del{flex:1;padding:12px;background:#FEE2E2;color:#EF5350;border:none;border-radius:var(--rs);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+    .confirm-btn-cancel{flex:1;padding:12px;background:var(--bg);color:var(--muted);border:none;border-radius:var(--rs);font-family:inherit;font-size:13px;cursor:pointer}
+
+    /* ── NEW FIELD STYLES ── */
+    .deadline-badge{font-size:9px;padding:2px 7px;border-radius:100px;font-weight:700;background:#FEF3C7;color:#D97706;flex-shrink:0;display:flex;align-items:center;gap:3px}
+    .deadline-badge.soon{background:#FEE2E2;color:#EF5350}
+    .date-range-tag{font-size:9px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:3px}
+    .skip-btn{font-size:9px;padding:2px 7px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.5);border-radius:100px;cursor:pointer;font-family:inherit;color:var(--muted);font-weight:700;flex-shrink:0}
+    .skip-btn.skipped{background:#FEE2E2;color:#EF5350;border-color:#FCA5A5}
   </style>
 </head>
 <body>
@@ -373,6 +432,7 @@ function defaults(){
     events:[],
     completions:{},
     logs:[],
+    skips:{},
     nextId:10,
   };
 }
@@ -382,6 +442,7 @@ function load(){
     d.fixedBlocks=d.fixedBlocks.map(b=>({...b,days:b.days||ALL_DAYS}));
     if(!d.completions)d.completions={};
     if(!d.logs)d.logs=[];
+    if(!d.skips)d.skips={};
     return d;}}catch{}
   return defaults();
 }
@@ -410,6 +471,212 @@ function suggestFor(slot,tasks){
 }
 
 // ===== MONTH CALENDAR =====
+// ===== CONFIRM DIALOG =====
+function ConfirmDialog({title,msg,onOk,onCancel}){
+  return(
+    <div className="confirm-overlay" onClick={onCancel}>
+      <div className="confirm-box" onClick={e=>e.stopPropagation()}>
+        <div className="confirm-title">{title}</div>
+        <div className="confirm-msg">{msg}</div>
+        <div className="confirm-btns">
+          <button className="confirm-btn-cancel" onClick={onCancel}>キャンセル</button>
+          <button className="confirm-btn-del" onClick={onOk}>削除する</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== POMODORO MODAL =====
+function PomodoroModal({onClose,onSave,tasks,dateStr,preTask}){
+  const[selId,setSelId]=useState(preTask?.id??null);
+  const[customName,setCustomName]=useState('');
+  const[customCat,setCustomCat]=useState('勉強');
+  const[phase,setPhase]=useState(preTask?'ready':'pick');
+  const[elapsed,setElapsed]=useState(0);
+  const[breakSec,setBreakSec]=useState(0);
+  const timerRef=useRef(null);
+  const breakRef=useRef(null);
+
+  const selTask=tasks.find(t=>t.id===selId);
+  const taskName=selTask?selTask.name:customName.trim()||'作業';
+  const taskCat=selTask?selTask.category:customCat;
+  const target=(selTask?selTask.maxDur:25)*60;
+
+  const startWork=()=>{setPhase('running');timerRef.current=setInterval(()=>setElapsed(p=>p+1),1000);};
+  const pauseWork=()=>{clearInterval(timerRef.current);setPhase('paused');};
+  const resumeWork=()=>{setPhase('running');timerRef.current=setInterval(()=>setElapsed(p=>p+1),1000);};
+  const startBreak=()=>{clearInterval(timerRef.current);setPhase('break');breakRef.current=setInterval(()=>setBreakSec(p=>p+1),1000);};
+  const endBreak=()=>{clearInterval(breakRef.current);resumeWork();};
+  const finish=()=>{
+    clearInterval(timerRef.current);clearInterval(breakRef.current);
+    const dur=Math.max(1,Math.round(elapsed/60));
+    onSave({taskId:selId??null,name:taskName,duration:dur,category:taskCat,date:dateStr});
+    onClose();
+  };
+  useEffect(()=>()=>{clearInterval(timerRef.current);clearInterval(breakRef.current);},[]);
+
+  const fmtSec=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  const R=52,C=2*Math.PI*R;
+  const pct=Math.min(elapsed/target,1);
+
+  const Chip=({v,cur,set,label,style})=>(
+    <button className={`chip${cur===v?' on':''}`} style={style} onClick={()=>set(v)}>{label}</button>
+  );
+
+  if(phase==='pick'){
+    const isCustom=selId===null;
+    return(
+      <div className="overlay" onClick={onClose}>
+        <div className="modal" onClick={e=>e.stopPropagation()}>
+          <div className="mtitle" style={{display:'flex',alignItems:'center',gap:7}}><IcoTimerSvg s={20}/>何をしますか？</div>
+          <div className="log-section">
+            <div className="log-section-title">タスクから選ぶ</div>
+            <div className="pomo-picker">
+              {tasks.map(t=>(
+                <button key={t.id} className={`pomo-task-chip${selId===t.id?' on':''}`} onClick={()=>setSelId(t.id)}>
+                  <span style={{width:8,height:8,borderRadius:'50%',background:CAT[t.category]||'#CBD5E1',flexShrink:0,display:'block'}}/>
+                  {t.name}
+                </button>
+              ))}
+              <button className={`pomo-task-chip${isCustom?' on':''}`} onClick={()=>setSelId(null)}>
+                <PencilIcon size={18}/> その他（自由入力）
+              </button>
+            </div>
+          </div>
+          {isCustom&&(
+            <div className="log-section">
+              <input className="fi" placeholder="例：自主学習、読書…" value={customName} onChange={e=>setCustomName(e.target.value)} style={{marginBottom:8}}/>
+              <div className="chips">
+                {CATS.map(c=><Chip key={c} v={c} cur={customCat} set={setCustomCat} label={c}
+                  style={customCat===c?{borderColor:CAT[c],background:CAT[c]+'22',color:CAT[c]}:{}}/>)}
+              </div>
+            </div>
+          )}
+          <button className="pomo-btn start-big" onClick={()=>setPhase('ready')}
+            disabled={isCustom&&!customName.trim()}>タイマーを開始する</button>
+          <button className="btn-cancel" onClick={onClose}>キャンセル</button>
+        </div>
+      </div>
+    );
+  }
+
+  return(
+    <div className="overlay" onClick={()=>{}}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <div className="mtitle" style={{display:'flex',alignItems:'center',gap:7}}><IcoTimerSvg s={20}/>ポモドーロ</div>
+        <div className="pomo-task-row">
+          <span style={{width:10,height:10,borderRadius:'50%',background:CAT[taskCat]||'#CBD5E1',display:'block',flexShrink:0}}/>
+          <div className="pomo-task-name">{taskName}</div>
+        </div>
+        <div className="pomo-ring-wrap">
+          <svg width="130" height="130" viewBox="0 0 130 130" style={{display:'block',margin:'0 auto'}}>
+            <circle cx="65" cy="65" r={R} fill="none" stroke="#EDE9FE" strokeWidth="10"/>
+            <circle cx="65" cy="65" r={R} fill="none"
+              stroke={phase==='break'?'#FDE68A':'#A78BFA'} strokeWidth="10"
+              strokeDasharray={C} strokeDashoffset={C*(1-pct)} strokeLinecap="round"
+              transform="rotate(-90 65 65)" style={{transition:'stroke-dashoffset .5s'}}/>
+          </svg>
+          <div className="pomo-time">{fmtSec(elapsed)}</div>
+          <div className="pomo-sub">{phase==='running'?'集中中…':phase==='paused'?'一時停止中':phase==='break'?'休憩中':'準備OK'}</div>
+        </div>
+        {phase==='break'&&(
+          <div className="pomo-break-row">
+            <span style={{fontSize:12,color:'#92400E',fontWeight:700}}>休憩タイマー</span>
+            <span className="pomo-break-time">{fmtSec(breakSec)}</span>
+            <button className="pomo-btn secondary" style={{flex:'unset',padding:'6px 14px'}} onClick={endBreak}>作業に戻る</button>
+          </div>
+        )}
+        {phase==='ready'&&<button className="pomo-btn start-big" onClick={startWork}>開始する</button>}
+        {(phase==='running'||phase==='paused')&&(
+          <div className="pomo-btns">
+            {phase==='running'
+              ?<button className="pomo-btn secondary" onClick={pauseWork}>一時停止</button>
+              :<button className="pomo-btn primary" onClick={resumeWork}>再開する</button>}
+            {phase==='running'&&<button className="pomo-btn secondary" onClick={startBreak}>休憩</button>}
+            <button className="pomo-btn done" onClick={finish}>完了</button>
+          </div>
+        )}
+        {phase==='break'&&(
+          <div className="pomo-btns">
+            <button className="pomo-btn done" onClick={finish}>完了として記録</button>
+          </div>
+        )}
+        <button className="btn-cancel" onClick={()=>{clearInterval(timerRef.current);clearInterval(breakRef.current);onClose();}}>キャンセル</button>
+      </div>
+    </div>
+  );
+}
+
+// ===== WEEK VIEW =====
+function WeekView({data,skips,onSelectDate}){
+  const[weekOffset,setWeekOffset]=useState(0);
+  const baseMonday=useMemo(()=>{
+    const d=new Date();d.setHours(0,0,0,0);
+    const dow=d.getDay();
+    d.setDate(d.getDate()-(dow===0?6:dow-1)+weekOffset*7);
+    return d;
+  },[weekOffset]);
+  const days=useMemo(()=>Array.from({length:7},(_,i)=>{
+    const d=new Date(baseMonday);d.setDate(d.getDate()+i);return d;
+  }),[baseMonday]);
+  const todayStr=today();
+  const WLABEL=['月','火','水','木','金','土','日'];
+  const D=18*60;
+  const weekLabel=`${days[0].getMonth()+1}/${days[0].getDate()} 〜 ${days[6].getMonth()+1}/${days[6].getDate()}`;
+  return(
+    <div>
+      <div className="week-nav">
+        <button className="cal-nav-btn" onClick={()=>setWeekOffset(p=>p-1)}>‹</button>
+        <span className="week-title">{weekLabel}</span>
+        <button className="cal-nav-btn" onClick={()=>setWeekOffset(p=>p+1)}>›</button>
+      </div>
+      <div className="week-rows">
+        {days.map((d,i)=>{
+          const ds=toStr(d);const dow=d.getDay();const isToday=ds===todayStr;
+          const dayFixed=data.fixedBlocks.filter(b=>{
+            if(!(b.days||ALL_DAYS).includes(dow))return false;
+            if((skips[ds]||[]).includes(b.id))return false;
+            if(b.startDate&&ds<b.startDate)return false;
+            if(b.endDate&&ds>b.endDate)return false;
+            return true;
+          });
+          const dayEvents=data.events.filter(e=>e.date===ds);
+          const allBlocks=[...dayFixed,...dayEvents];
+          const freeMin=getFreeSlots(allBlocks).reduce((s,sl)=>s+sl.dur,0);
+          const fh=Math.floor(freeMin/60),fm=freeMin%60;
+          return(
+            <div key={ds} className={`week-row${isToday?' today-row':''}`} onClick={()=>onSelectDate(ds)}>
+              <div className="week-day">
+                <div className="week-dow" style={{color:dow===0?'#F87171':dow===6?'#60A5FA':undefined}}>{WLABEL[i]}</div>
+                <div className={`week-date${dow===0?' sun':dow===6?' sat':''}`}>
+                  {isToday?<span className="week-date today-num">{d.getDate()}</span>:d.getDate()}
+                </div>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div className="week-bar-wrap">
+                  {allBlocks.filter(b=>b.startTime<1440&&b.endTime>360).map((b,j)=>{
+                    const c=CAT[b.category]||'#BDBDBD';
+                    const l=((Math.max(b.startTime,360)-360)/D)*100;
+                    const w=((Math.min(b.endTime,1440)-Math.max(b.startTime,360))/D)*100;
+                    return<div key={j} className="week-bar-seg" style={{left:`${l}%`,width:`${Math.max(w,.5)}%`,background:c,opacity:.8}}/>;
+                  })}
+                </div>
+                {dayEvents.length>0&&<div className="week-event-dots">
+                  {dayEvents.slice(0,6).map((e,j)=>(
+                    <div key={j} className="week-event-dot" style={{background:CAT[e.category]||'#CBD5E1'}}/>
+                  ))}
+                </div>}
+              </div>
+              <div className="week-free-badge">{fh>0?`${fh}h`:''}{fm>0?`${fm}m`:freeMin===0?'─':''}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function MonthCalendar({events,onSelectDate,selectedDate}){
   const now=new Date();
   const[vm,setVm]=useState({y:now.getFullYear(),m:now.getMonth()});
@@ -487,14 +754,22 @@ function MonthCalendar({events,onSelectDate,selectedDate}){
 }
 
 // ===== DAY VIEW =====
-function DayView({dateStr,data,onBack,onAddEvent,onOpenLog,onDelEvent}){
+function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips,onToggleSkip}){
   const d=new Date(dateStr+'T00:00:00');
   const dow=d.getDay();
   const isToday=dateStr===today();
   const label=`${d.getMonth()+1}月${d.getDate()}日（${DOW[dow]}）`;
+  const daySkips=skips[dateStr]||[];
 
-  // Blocks for this day
-  const dayFixed=data.fixedBlocks.filter(b=>(b.days||ALL_DAYS).includes(dow));
+  // Blocks for this day (apply skips + date range)
+  const dayFixed=data.fixedBlocks.filter(b=>{
+    if(!(b.days||ALL_DAYS).includes(dow))return false;
+    if(daySkips.includes(b.id))return false;
+    if(b.startDate&&dateStr<b.startDate)return false;
+    if(b.endDate&&dateStr>b.endDate)return false;
+    return true;
+  });
+  const dayFixedAll=data.fixedBlocks.filter(b=>(b.days||ALL_DAYS).includes(dow));
   const dayEvents=data.events.filter(e=>e.date===dateStr);
   const allBlocks=[
     ...dayFixed.map(b=>({...b,isFixed:true})),
@@ -570,18 +845,18 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenLog,onDelEvent}){
                 {ht>=42&&sugs.length>0&&(
                   <div className="free-sugs">
                     {sugs.map(t=>(
-                      <button key={t.id} className="free-chip" onClick={()=>onOpenLog(t,sl)}>{t.name}</button>
+                      <button key={t.id} className="free-chip" onClick={()=>onOpenPomodoro(t)}>{t.name}</button>
                     ))}
                   </div>
                 )}
                 {ht>=52&&(
-                  <button className="free-log-btn" onClick={()=>onOpenLog(null,sl)}>＋ 記録する</button>
+                  <button className="free-log-btn" onClick={()=>onOpenPomodoro(null)}>＋ タイマー開始</button>
                 )}
               </div>
             );
           })}
 
-          {/* Fixed blocks */}
+          {/* Fixed blocks (active today) */}
           {dayFixed.filter(b=>b.endTime>TS&&b.startTime<TE).map(b=>{
             const c=CAT[b.category]||'#BDBDBD';
             const s=Math.max(b.startTime,TS),e=Math.min(b.endTime,TE);
@@ -591,8 +866,29 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenLog,onDelEvent}){
                 top:t2px(s),height:Math.max(ht,20),
                 background:c+'28',border:`2px solid ${c}`,
               }}>
-                <div className="block-name" style={{color:c}}>{b.name}</div>
+                <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
+                  <div className="block-name" style={{color:c}}>{b.name}</div>
+                  {ht>=24&&<button className="skip-btn" onClick={()=>onToggleSkip(dateStr,b.id)} title="この日はスキップ">✕</button>}
+                </div>
                 {ht>=32&&<div className="block-time" style={{color:c}}>{fmt(b.startTime)}〜{fmt(b.endTime)}</div>}
+              </div>
+            );
+          })}
+          {/* Skipped blocks (shown faded) */}
+          {dayFixedAll.filter(b=>daySkips.includes(b.id)&&b.endTime>TS&&b.startTime<TE).map(b=>{
+            const c='#CBD5E1';
+            const s=Math.max(b.startTime,TS),e=Math.min(b.endTime,TE);
+            const ht=((e-s)/60)*PH;
+            return(
+              <div key={'sk'+b.id} className="block" style={{
+                top:t2px(s),height:Math.max(ht,20),
+                background:'#F5F5F7',border:`2px dashed ${c}`,opacity:.6,
+              }}>
+                <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
+                  <div className="block-name" style={{color:c,textDecoration:'line-through'}}>{b.name}</div>
+                  <button className="skip-btn skipped" onClick={()=>onToggleSkip(dateStr,b.id)} title="スキップ解除">↩</button>
+                </div>
+                {ht>=32&&<div className="block-time" style={{color:c}}>スキップ</div>}
               </div>
             );
           })}
@@ -626,7 +922,7 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenLog,onDelEvent}){
 }
 
 // ===== TASKS SCREEN =====
-function TasksScreen({tasks,onDel,onEdit,completions,onToggle}){
+function TasksScreen({tasks,onDel,onEdit,completions,onToggle,onPomodoro}){
   const PI={high:<IcoPrioHigh s={11}/>,medium:<IcoPrioMed s={11}/>,low:<IcoPrioLow s={11}/>};
   const PL={high:'高',medium:'中',low:'低'};
   const PC={high:'#F9A8D4',medium:'#FDE68A',low:'#86EFAC'};
@@ -634,65 +930,79 @@ function TasksScreen({tasks,onDel,onEdit,completions,onToggle}){
   const TL={morning:'朝',afternoon:'昼',evening:'夜',anytime:'いつでも'};
   const todayStr=today();
   const doneIds=completions[todayStr]||[];
+  const[confirm,setConfirm]=useState(null);
+  const dlDays=dl=>{if(!dl)return null;const d=new Date(dl+'T00:00:00');const n=new Date();n.setHours(0,0,0,0);return Math.round((d-n)/86400000);};
   if(!tasks.length)return(
     <div className="empty"><div className="empty-icon"><EmptyIllustTasks/></div>
     <div className="empty-text">タスクがまだありません。<br/>＋ボタンから追加してみよう！</div></div>
   );
   return(
-    <div className="list">
-      {tasks.map(t=>{
-        const done=doneIds.includes(t.id);
-        return(
-          <div className={`tcard${done?' done-card':''}`} key={t.id}>
-            <button className={`check-box${done?' done':''}`} onClick={()=>onToggle(t.id,todayStr)} title="完了">
-              {done?'✓':''}
-            </button>
-            <div className="cdot" style={{background:CAT[t.category]||'#BDBDBD'}}/>
-            <div style={{flex:1,minWidth:0}}>
-              <div className="tname" style={done?{textDecoration:'line-through',opacity:.6}:{}}>{t.name}</div>
-              <div className="tmeta"><IcoTimerSvg c="#C4B5FD" s={11}/> {fmtDur(t.minDur,t.maxDur)} · {FL[t.freq]} · {TL[t.pref]}</div>
+    <>
+      {confirm&&<ConfirmDialog title="タスクを削除" msg={`「${confirm.name}」を削除しますか？`} onOk={()=>{onDel(confirm.id);setConfirm(null);}} onCancel={()=>setConfirm(null)}/>}
+      <div className="list">
+        {tasks.map(t=>{
+          const done=doneIds.includes(t.id);
+          const dl=dlDays(t.deadline);
+          const soon=dl!==null&&dl<=3;
+          return(
+            <div className={`tcard${done?' done-card':''}`} key={t.id}>
+              <button className={`check-box${done?' done':''}`} onClick={()=>onToggle(t.id,todayStr)}>{done?'✓':''}</button>
+              <div className="cdot" style={{background:CAT[t.category]||'#BDBDBD'}}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div className="tname" style={done?{textDecoration:'line-through',opacity:.6}:{}}>{t.name}</div>
+                <div className="tmeta"><IcoTimerSvg c="#C4B5FD" s={11}/> {fmtDur(t.minDur,t.maxDur)} · {FL[t.freq]} · {TL[t.pref]}</div>
+                {t.deadline&&<span className={`deadline-badge${soon?' soon':''}`}><IcoClock s={9}/>{dl===0?'今日まで':dl<0?`${-dl}日超過`:`あと${dl}日`}</span>}
+              </div>
+              <span className="pbadge" style={{background:PC[t.priority]+'20',color:PC[t.priority],display:'flex',alignItems:'center',gap:3}}>{PI[t.priority]}{PL[t.priority]}</span>
+              <button className="ebtn" title="開始" onClick={()=>onPomodoro(t)}>
+                <svg width={26} height={26} viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="9" fill="#EDE9FE"/><circle cx="16" cy="16" r="7" fill="#DDD6FE" stroke="#A78BFA" strokeWidth="1.5"/><path d="M14 13l6 3-6 3V13z" fill="#A78BFA"/></svg>
+              </button>
+              <button className="ebtn" onClick={()=>onEdit(t)}><PencilIcon size={26}/></button>
+              <button className="dbtn" onClick={()=>setConfirm(t)}>×</button>
             </div>
-            <span className="pbadge" style={{background:PC[t.priority]+'20',color:PC[t.priority],display:'flex',alignItems:'center',gap:3}}>{PI[t.priority]}{PL[t.priority]}</span>
-            <button className="ebtn" onClick={()=>onEdit(t)}><PencilIcon size={26}/></button>
-            <button className="dbtn" onClick={()=>onDel(t.id)}>×</button>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
 // ===== FIXED SCREEN =====
 function FixedScreen({blocks,onDel,onEdit}){
+  const[confirm,setConfirm]=useState(null);
   if(!blocks.length)return(
     <div className="empty"><div className="empty-icon"><EmptyIllustFixed/></div>
     <div className="empty-text">固定予定がありません。<br/>＋ボタンから追加してみよう！</div></div>
   );
   return(
-    <div className="list">
-      {[...blocks].sort((a,b)=>a.startTime-b.startTime).map(b=>{
-        const days=b.days||ALL_DAYS;
-        return(
-          <div className="tcard" key={b.id}>
-            <div className="cdot" style={{background:CAT[b.category]||'#BDBDBD'}}/>
-            <div style={{flex:1,minWidth:0}}>
-              <div className="tname">{b.name}</div>
-              <div className="tmeta">{fmt(b.startTime)}〜{fmt(b.endTime)}（{b.endTime-b.startTime}分）</div>
-              <div className="dow-badges">
-                {DOW.map((d,i)=>(
-                  <span key={i} className="dow-badge" style={{
-                    background:days.includes(i)?(i===0?'#FEE2E2':i===6?'#DBEAFE':'var(--pl)'):'#F5F5F7',
-                    color:days.includes(i)?(i===0?'#F87171':i===6?'#60A5FA':'var(--primary)'):'#CBD5E1',
-                  }}>{d}</span>
-                ))}
+    <>
+      {confirm&&<ConfirmDialog title="固定予定を削除" msg={`「${confirm.name}」を削除しますか？`} onOk={()=>{onDel(confirm.id);setConfirm(null);}} onCancel={()=>setConfirm(null)}/>}
+      <div className="list">
+        {[...blocks].sort((a,b)=>a.startTime-b.startTime).map(b=>{
+          const days=b.days||ALL_DAYS;
+          return(
+            <div className="tcard" key={b.id}>
+              <div className="cdot" style={{background:CAT[b.category]||'#BDBDBD'}}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div className="tname">{b.name}</div>
+                <div className="tmeta">{fmt(b.startTime)}〜{fmt(b.endTime)}（{b.endTime-b.startTime}分）</div>
+                <div className="dow-badges">
+                  {DOW.map((d,i)=>(
+                    <span key={i} className="dow-badge" style={{
+                      background:days.includes(i)?(i===0?'#FEE2E2':i===6?'#DBEAFE':'var(--pl)'):'#F5F5F7',
+                      color:days.includes(i)?(i===0?'#F87171':i===6?'#60A5FA':'var(--primary)'):'#CBD5E1',
+                    }}>{d}</span>
+                  ))}
+                </div>
+                {(b.startDate||b.endDate)&&<div className="date-range-tag"><IcoClock s={9}/>{b.startDate||'〜'}〜{b.endDate||'制限なし'}</div>}
               </div>
+              <button className="ebtn" onClick={()=>onEdit(b)}><PencilIcon size={26}/></button>
+              <button className="dbtn" onClick={()=>setConfirm(b)}>×</button>
             </div>
-            <button className="ebtn" onClick={()=>onEdit(b)}><PencilIcon size={26}/></button>
-            <button className="dbtn" onClick={()=>onDel(b.id)}>×</button>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
@@ -710,6 +1020,7 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
   const[pref,setPref]=useState(isEdit&&mode==='task'?editItem.pref:'anytime');
   const[cat,setCat]=useState(isEdit&&mode==='task'?editItem.category:'その他');
   const[sug,setSug]=useState(null);
+  const[deadline,setDeadline]=useState(isEdit&&mode==='task'?(editItem.deadline||''):'');
 
   // Fixed
   const[fname,setFname]=useState(isEdit&&mode==='fixed'?editItem.name:'');
@@ -717,6 +1028,8 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
   const[fen,setFen]=useState(isEdit&&mode==='fixed'?fmt(editItem.endTime):'10:00');
   const[fcat,setFcat]=useState(isEdit&&mode==='fixed'?editItem.category:'その他');
   const[fdays,setFdays]=useState(isEdit&&mode==='fixed'?(editItem.days||[...WEEKDAYS]):[...WEEKDAYS]);
+  const[fStartDate,setFStartDate]=useState(isEdit&&mode==='fixed'?(editItem.startDate||''):'');
+  const[fEndDate,setFEndDate]=useState(isEdit&&mode==='fixed'?(editItem.endDate||''):'');
 
   // Event
   const[ename,setEname]=useState(isEdit&&mode==='event'?editItem.name:'');
@@ -737,12 +1050,12 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
   const submit=()=>{
     if(mode==='task'){
       if(!name.trim())return;
-      const payload={type:'task',name:name.trim(),minDur:minD,maxDur:maxD,priority:pri,freq,pref,category:cat};
+      const payload={type:'task',name:name.trim(),minDur:minD,maxDur:maxD,priority:pri,freq,pref,category:cat,deadline:deadline||null};
       isEdit?onUpdate({...payload,id:editItem.id}):onAdd(payload);
     }else if(mode==='fixed'){
       if(!fname.trim())return;
       const s=parse(fst),e=parse(fen);if(e<=s)return;
-      const payload={type:'fixed',name:fname.trim(),startTime:s,endTime:e,category:fcat,days:fdays};
+      const payload={type:'fixed',name:fname.trim(),startTime:s,endTime:e,category:fcat,days:fdays,startDate:fStartDate||null,endDate:fEndDate||null};
       isEdit?onUpdate({...payload,id:editItem.id}):onAdd(payload);
     }else{
       if(!ename.trim())return;
@@ -794,6 +1107,13 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
             <div className="fg"><label className="fl">カテゴリ</label><div className="chips">
               {CATS.map(c=><Chip key={c} v={c} cur={cat} set={setCat} label={c}
                 style={cat===c?{borderColor:CAT[c],background:CAT[c]+'22',color:CAT[c]}:{}}/>)}</div></div>
+            <div className="fg">
+              <label className="fl">締め切り（任意）</label>
+              <div style={{display:'flex',alignItems:'center',gap:8}}>
+                <input className="fi fi-sm" type="date" value={deadline} onChange={e=>setDeadline(e.target.value)} style={{flex:1}}/>
+                {deadline&&<button className="btn-cancel" style={{padding:'6px 10px',margin:0,fontSize:11}} onClick={()=>setDeadline('')}>クリア</button>}
+              </div>
+            </div>
           </>
         )}
 
@@ -822,6 +1142,15 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
             <div className="fg"><label className="fl">カテゴリ</label><div className="chips">
               {CATS.map(c=><Chip key={c} v={c} cur={fcat} set={setFcat} label={c}
                 style={fcat===c?{borderColor:CAT[c],background:CAT[c]+'22',color:CAT[c]}:{}}/>)}</div></div>
+            <div className="fg">
+              <label className="fl">有効期間（任意・期限なしはそのまま）</label>
+              <div className="form-row">
+                <div className="fg"><label className="fl">開始日</label>
+                  <input className="fi fi-sm" type="date" value={fStartDate} onChange={e=>setFStartDate(e.target.value)}/></div>
+                <div className="fg"><label className="fl">終了日</label>
+                  <input className="fi fi-sm" type="date" value={fEndDate} onChange={e=>setFEndDate(e.target.value)}/></div>
+              </div>
+            </div>
           </>
         )}
 
@@ -1125,13 +1454,14 @@ function StatsScreen({data}){
 // ===== APP =====
 function App(){
   const[data,setData]=useState(load);
-  const[tab,setTab]=useState('cal');
+  const[tab,setTab]=useState('today');
   const[selDate,setSelDate]=useState(null);
+  const[calMode,setCalMode]=useState('month'); // 'month'|'week'
   const[showAdd,setShowAdd]=useState(false);
   const[addMode,setAddMode]=useState('task');
   const[addDate,setAddDate]=useState('');
   const[editItem,setEditItem]=useState(null);
-  const[logModal,setLogModal]=useState(null); // {task,slot} or null
+  const[pomodoroTask,setPomodoroTask]=useState(undefined); // undefined=closed, null=no task, task obj=preset
 
   const mutate=useCallback(fn=>{
     setData(prev=>{const next=fn(prev);save(next);return next;});
@@ -1172,6 +1502,15 @@ function App(){
   const delFixed =id=>mutate(p=>({...p,fixedBlocks:p.fixedBlocks.filter(b=>b.id!==id)}));
   const delEvent =id=>mutate(p=>({...p,events:p.events.filter(e=>e.id!==id)}));
 
+  const toggleSkip=(dateStr,blockId)=>{
+    mutate(prev=>{
+      const skips={...prev.skips||{}};
+      const day=skips[dateStr]||[];
+      skips[dateStr]=day.includes(blockId)?day.filter(id=>id!==blockId):[...day,blockId];
+      return{...prev,skips};
+    });
+  };
+
   const toggleCompletion=(taskId,dateStr)=>{
     mutate(prev=>{
       const comp=prev.completions||{};
@@ -1211,6 +1550,13 @@ function App(){
   const tf=todayFree.reduce((s,sl)=>s+sl.dur,0);
   const tfh=Math.floor(tf/60),tfm=tf%60;
 
+  const NavToday=({active})=>{const c=active?'#A78BFA':'#A09AB8';return(
+    <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="17" r="10" fill={active?'#EDE9FE':'#F3F0FB'} stroke={c} strokeWidth="2"/>
+      <path d="M16 11 L16 17 L20 20" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M11 5 L14 8 M21 5 L18 8" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  );};
   const NavCal=({active})=>{const c=active?'#A78BFA':'#A09AB8';return(
     <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
       <rect x="4" y="7" width="24" height="21" rx="5" fill={active?'#EDE9FE':'#F3F0FB'} stroke={c} strokeWidth="2"/>
@@ -1243,13 +1589,29 @@ function App(){
     </svg>
   );};
   const tabInfo=[
-    {id:'cal',   NavIcon:NavCal,  label:'カレンダー'},
-    {id:'tasks', NavIcon:NavCheck,label:'タスク'},
-    {id:'fixed', NavIcon:NavPin,  label:'固定予定'},
-    {id:'stats', NavIcon:NavStats,label:'記録'},
+    {id:'today', NavIcon:NavToday, label:'今日'},
+    {id:'cal',   NavIcon:NavCal,   label:'カレンダー'},
+    {id:'tasks', NavIcon:NavCheck, label:'タスク'},
+    {id:'fixed', NavIcon:NavPin,   label:'固定予定'},
+    {id:'stats', NavIcon:NavStats, label:'記録'},
   ];
 
-  const fabModeMap={cal:'event',tasks:'task',fixed:'fixed'};
+  const fabModeMap={today:'event',cal:'event',tasks:'task',fixed:'fixed'};
+  const skips=data.skips||{};
+
+  // DayView helper (shared by 'today' and 'cal' tabs)
+  const renderDayView=(dateStr,onBack)=>(
+    <DayView
+      dateStr={dateStr}
+      data={data}
+      onBack={onBack}
+      onAddEvent={()=>openAdd('event',dateStr)}
+      onOpenPomodoro={task=>setPomodoroTask(task===null?null:task)}
+      onDelEvent={delEvent}
+      skips={skips}
+      onToggleSkip={toggleSkip}
+    />
+  );
 
   return(
     <div className="app">
@@ -1265,7 +1627,7 @@ function App(){
               スキマ
             </div>
             <div className="hdr-sub">
-              {selDate
+              {selDate&&tab==='cal'
                 ? (() => { const d=new Date(selDate+'T00:00:00');
                     return `${d.getMonth()+1}月${d.getDate()}日（${DOW[d.getDay()]}）`;})()
                 : new Date().toLocaleDateString('ja-JP',{month:'long',day:'numeric',weekday:'short'})
@@ -1279,31 +1641,29 @@ function App(){
       </div>
 
       <div className="screen">
+        {tab==='today'&&renderDayView(todayStr,null)}
         {tab==='cal'&&(
           selDate
-            ? <DayView
-                dateStr={selDate}
-                data={data}
-                onBack={()=>setSelDate(null)}
-                onAddEvent={()=>openAdd('event',selDate)}
-                onOpenLog={(task,slot)=>setLogModal({task,slot})}
-                onDelEvent={delEvent}
-              />
+            ? renderDayView(selDate,()=>setSelDate(null))
             : <>
                 <CountdownBanner events={data.events}/>
-                <MonthCalendar
-                  events={data.events}
-                  selectedDate={selDate}
-                  onSelectDate={d=>{setSelDate(d);}}
-                />
+                <div className="cal-toggle">
+                  <button className={`cal-toggle-btn${calMode==='month'?' on':''}`} onClick={()=>setCalMode('month')}>月</button>
+                  <button className={`cal-toggle-btn${calMode==='week'?' on':''}`} onClick={()=>setCalMode('week')}>週</button>
+                </div>
+                {calMode==='month'
+                  ? <MonthCalendar events={data.events} selectedDate={selDate} onSelectDate={d=>setSelDate(d)}/>
+                  : <WeekView data={data} skips={skips} onSelectDate={d=>{setSelDate(d);}}/>
+                }
               </>
         )}
-        {tab==='tasks'&&<TasksScreen tasks={data.tasks} onDel={delTask} onEdit={t=>openEdit(t,'task')} completions={data.completions||{}} onToggle={toggleCompletion}/>}
+        {tab==='tasks'&&<TasksScreen tasks={data.tasks} onDel={delTask} onEdit={t=>openEdit(t,'task')} completions={data.completions||{}} onToggle={toggleCompletion} onPomodoro={t=>setPomodoroTask(t)}/>}
         {tab==='fixed'&&<FixedScreen blocks={data.fixedBlocks} onDel={delFixed} onEdit={b=>openEdit(b,'fixed')}/>}
         {tab==='stats'&&<StatsScreen data={data}/>}
       </div>
 
-      {tab!=='stats'&&<button className="fab" onClick={()=>openAdd(fabModeMap[tab]||'task',selDate||'')}>＋</button>}
+      {tab!=='stats'&&tab!=='today'&&<button className="fab" onClick={()=>openAdd(fabModeMap[tab]||'task',selDate||'')}>＋</button>}
+      {tab==='today'&&<button className="fab" onClick={()=>openAdd('event',todayStr)}>＋</button>}
 
       <nav className="bnav">
         {tabInfo.map(n=>(
@@ -1314,14 +1674,13 @@ function App(){
         ))}
       </nav>
 
-      {logModal&&(
-        <LogModal
-          onClose={()=>setLogModal(null)}
-          onSave={handleLog}
+      {pomodoroTask!==undefined&&(
+        <PomodoroModal
+          onClose={()=>setPomodoroTask(undefined)}
+          onSave={entry=>{handleLog(entry);setPomodoroTask(undefined);}}
           tasks={data.tasks}
-          dateStr={selDate||today()}
-          preTask={logModal.task}
-          slotDur={logModal.slot?.dur}
+          dateStr={tab==='today'?todayStr:selDate||todayStr}
+          preTask={pomodoroTask}
         />
       )}
       {showAdd&&(
