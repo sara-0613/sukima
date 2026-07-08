@@ -91,6 +91,20 @@
     .free-chip{background:#fff;border:1px solid #86EFAC;border-radius:100px;padding:2px 7px;font-size:9px;color:#5A9E72;cursor:pointer;font-family:inherit;line-height:1.4}
     .free-chip:active{background:#DCFCE7}
     .free-log-btn{background:none;border:none;font-size:8px;color:#86EFAC;cursor:pointer;font-family:inherit;padding:2px 0;margin-top:2px;display:flex;align-items:center;gap:2px;font-weight:700}
+    .rec-card{background:linear-gradient(135deg,var(--pale),#fff);border:1.5px solid var(--border);border-radius:var(--rs);padding:12px 14px;margin-bottom:12px}
+    .rec-title{font-size:11px;font-weight:800;color:var(--primary);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+    .rec-item{display:flex;align-items:center;justify-content:space-between;width:100%;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:12px;font-family:inherit;cursor:pointer;gap:8px;margin-bottom:4px;text-align:left}
+    .rec-item:last-child{margin-bottom:0}
+    .rec-item:active{background:var(--pl)}
+    .rec-dur{font-size:10px;color:#A09AB8;flex-shrink:0}
+    .move-ring-wrap{display:flex;align-items:center;gap:14px;background:var(--pale);border-radius:var(--rs);padding:12px 16px;margin-bottom:14px}
+    .move-ring-info{display:flex;flex-direction:column;gap:3px}
+    .move-ring-label{font-size:11px;color:#A09AB8;font-weight:600}
+    .move-ring-count{font-size:18px;font-weight:900;color:var(--primary);line-height:1}
+    .qlog-row{display:flex;align-items:center;gap:8px;background:var(--pl);border-radius:10px;padding:8px 10px;margin-bottom:6px}
+    .qlog-input{width:56px;border:1.5px solid var(--border);border-radius:8px;padding:4px 6px;font-size:13px;font-family:inherit;text-align:center;background:#fff}
+    .qlog-save{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-family:inherit;font-weight:700;cursor:pointer}
+    .qlog-cancel{background:none;border:none;color:#A09AB8;font-size:12px;font-family:inherit;cursor:pointer}
 
     /* Countdown banner */
     .countdown-card{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:var(--rs);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
@@ -865,6 +879,34 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
         </div>
       </div>
 
+      {/* Recommendation card */}
+      {(()=>{
+        const PC={high:'#F9A8D4',medium:'#FDE68A',low:'#86EFAC'};
+        const allSlots=slots.filter(s=>s.dur>=20);
+        if(!allSlots.length||!data.tasks.length)return null;
+        const bigSlot=allSlots.reduce((a,b)=>b.dur>a.dur?b:a,allSlots[0]);
+        const recs=suggestFor(bigSlot,data.tasks).slice(0,3);
+        if(!recs.length)return null;
+        return(
+          <div className="rec-card">
+            <div className="rec-title">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1L9.8 5.5H14.5L10.6 8.4L12 13L8 10.2L4 13L5.4 8.4L1.5 5.5H6.2L8 1Z" fill="var(--primary)" opacity="0.85"/></svg>
+              このスキマ時間に試してみませんか？
+              <span style={{marginLeft:'auto',fontSize:10,color:'#A09AB8',fontWeight:600}}>{fmt(bigSlot.start)}〜{fmt(bigSlot.end)}（{bigSlot.dur}分）</span>
+            </div>
+            {recs.map(t=>(
+              <button key={t.id} className="rec-item" onClick={()=>onOpenPomodoro(t)}>
+                <span style={{display:'flex',alignItems:'center',gap:6}}>
+                  <span style={{width:8,height:8,borderRadius:'50%',background:PC[t.priority]||'#E0E0E0',flexShrink:0,display:'inline-block'}}/>
+                  <span style={{fontWeight:700,color:'#374151'}}>{t.name}</span>
+                </span>
+                <span className="rec-dur">{t.minDur}〜{t.maxDur}分</span>
+              </button>
+            ))}
+          </div>
+        );
+      })()}
+
       {/* Add event button */}
       <button onClick={onAddEvent} style={{
         width:'100%',background:'#fff',border:'2px dashed var(--border)',
@@ -898,9 +940,13 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
                   {ht>=22&&<div className="free-label" style={{display:'flex',alignItems:'center',gap:3}}><IcoSparkle s={9}/>空き {sl.dur}分</div>}
                   {ht>=42&&sugs.length>0&&(
                     <div className="free-sugs">
-                      {sugs.map(t=>(
-                        <button key={t.id} className="free-chip" onClick={()=>onOpenPomodoro(t)}>{t.name}</button>
-                      ))}
+                      {sugs.map(t=>{
+                        const pc={high:'#F9A8D4',medium:'#FDE68A',low:'#86EFAC'};
+                        const c=pc[t.priority]||'#E0E0E0';
+                        return(
+                          <button key={t.id} className="free-chip" style={{background:c+'30',borderColor:c,color:'inherit'}} onClick={()=>onOpenPomodoro(t)}>{t.name}</button>
+                        );
+                      })}
                     </div>
                   )}
                   {ht>=52&&<button className="free-log-btn" onClick={()=>onOpenPomodoro(null)}>＋ タイマー開始</button>}
@@ -973,7 +1019,7 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
 }
 
 // ===== TASKS SCREEN =====
-function TasksScreen({tasks,onDel,onEdit,completions,onToggle,onPomodoro}){
+function TasksScreen({tasks,onDel,onEdit,completions,onToggle,onPomodoro,onLog}){
   const PI={high:<IcoPrioHigh s={11}/>,medium:<IcoPrioMed s={11}/>,low:<IcoPrioLow s={11}/>};
   const PL={high:'高',medium:'中',low:'低'};
   const PC={high:'#F9A8D4',medium:'#FDE68A',low:'#86EFAC'};
@@ -982,7 +1028,35 @@ function TasksScreen({tasks,onDel,onEdit,completions,onToggle,onPomodoro}){
   const todayStr=today();
   const doneIds=completions[todayStr]||[];
   const[confirm,setConfirm]=useState(null);
+  const[qlogTask,setQlogTask]=useState(null); // task being quick-logged
+  const[qlogMin,setQlogMin]=useState('');
+  const saveQlog=()=>{
+    const m=parseInt(qlogMin,10);
+    if(isNaN(m)||m<=0){setQlogTask(null);setQlogMin('');return;}
+    onLog({type:'task',name:qlogTask.name,taskId:qlogTask.id,duration:m,date:todayStr,note:''});
+    setQlogTask(null);setQlogMin('');
+  };
   const dlDays=dl=>{if(!dl)return null;const d=new Date(dl+'T00:00:00');const n=new Date();n.setHours(0,0,0,0);return Math.round((d-n)/86400000);};
+  const total=tasks.length;
+  const done=doneIds.length;
+  const pct=total>0?done/total:0;
+  const R=28;const circ=2*Math.PI*R;
+  const MoveRing=(
+    <div className="move-ring-wrap">
+      <svg width="70" height="70" viewBox="0 0 70 70">
+        <circle cx="35" cy="35" r={R} fill="none" stroke="var(--pl)" strokeWidth="9"/>
+        <circle cx="35" cy="35" r={R} fill="none" stroke="var(--primary)" strokeWidth="9"
+          strokeDasharray={`${circ*pct} ${circ}`} strokeLinecap="round"
+          transform="rotate(-90 35 35)" style={{transition:'stroke-dasharray 0.4s'}}/>
+        <text x="35" y="39" textAnchor="middle" fontSize="13" fontWeight="900" fill="var(--primary)">{done}/{total}</text>
+      </svg>
+      <div className="move-ring-info">
+        <div className="move-ring-label">今日の達成</div>
+        <div className="move-ring-count">{total>0?Math.round(pct*100):0}%</div>
+        <div style={{fontSize:11,color:'#A09AB8'}}>{done}件完了 / {total}件</div>
+      </div>
+    </div>
+  );
   if(!tasks.length)return(
     <div className="empty"><div className="empty-icon"><EmptyIllustTasks/></div>
     <div className="empty-text">タスクがまだありません。<br/>＋ボタンから追加してみよう！</div></div>
@@ -990,6 +1064,16 @@ function TasksScreen({tasks,onDel,onEdit,completions,onToggle,onPomodoro}){
   return(
     <>
       {confirm&&<ConfirmDialog title="タスクを削除" msg={`「${confirm.name}」を削除しますか？`} onOk={()=>{onDel(confirm.id);setConfirm(null);}} onCancel={()=>setConfirm(null)}/>}
+      {MoveRing}
+      {qlogTask&&(
+        <div className="qlog-row">
+          <span style={{fontSize:12,fontWeight:700,color:'var(--primary)',flex:1,minWidth:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{qlogTask.name}</span>
+          <input className="qlog-input" type="number" min="1" max="300" placeholder="分" value={qlogMin} onChange={e=>setQlogMin(e.target.value)} autoFocus onKeyDown={e=>{if(e.key==='Enter')saveQlog();if(e.key==='Escape'){setQlogTask(null);setQlogMin('');}}}/>
+          <span style={{fontSize:11,color:'#A09AB8'}}>分やった</span>
+          <button className="qlog-save" onClick={saveQlog}>記録</button>
+          <button className="qlog-cancel" onClick={()=>{setQlogTask(null);setQlogMin('');}}>✕</button>
+        </div>
+      )}
       <div className="list">
         {tasks.map(t=>{
           const done=doneIds.includes(t.id);
@@ -1005,6 +1089,9 @@ function TasksScreen({tasks,onDel,onEdit,completions,onToggle,onPomodoro}){
                 {t.deadline&&<span className={`deadline-badge${soon?' soon':''}`}><IcoClock s={9}/>{dl===0?'今日まで':dl<0?`${-dl}日超過`:`あと${dl}日`}</span>}
               </div>
               <span className="pbadge" style={{background:PC[t.priority]+'20',color:PC[t.priority],display:'flex',alignItems:'center',gap:3}}>{PI[t.priority]}{PL[t.priority]}</span>
+              <button className="ebtn" title="時間を記録" onClick={()=>{setQlogTask(t);setQlogMin('');}}>
+                <svg width={26} height={26} viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="9" fill="var(--pl)"/><circle cx="16" cy="17" r="7" fill="none" stroke="var(--primary)" strokeWidth="1.5"/><path d="M16 13v4l3 2" stroke="var(--primary)" strokeWidth="1.5" strokeLinecap="round"/><path d="M13 5h6M16 5v3" stroke="var(--primary-mid)" strokeWidth="1.5" strokeLinecap="round"/></svg>
+              </button>
               <button className="ebtn" title="開始" onClick={()=>onPomodoro(t)}>
                 <svg width={26} height={26} viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="9" fill="var(--pl)"/><circle cx="16" cy="16" r="7" fill="var(--primary-mid)" stroke="var(--primary)" strokeWidth="1.5" opacity="0.6"/><path d="M14 13l6 3-6 3V13z" fill="var(--primary)"/></svg>
               </button>
@@ -1773,9 +1860,9 @@ function App(){
   );};
   const tabInfo=[
     {id:'cal',   NavIcon:NavCal,   label:'カレンダー'},
-    {id:'tasks', NavIcon:NavCheck, label:'タスク'},
-    {id:'today', NavIcon:NavToday, label:'今日'},
     {id:'fixed', NavIcon:NavPin,   label:'固定予定'},
+    {id:'today', NavIcon:NavToday, label:'今日'},
+    {id:'tasks', NavIcon:NavCheck, label:'タスク'},
     {id:'stats', NavIcon:NavStats, label:'記録'},
   ];
 
@@ -1896,7 +1983,7 @@ function App(){
                 }
               </>
         )}
-        {tab==='tasks'&&<TasksScreen tasks={data.tasks} onDel={delTask} onEdit={t=>openEdit(t,'task')} completions={data.completions||{}} onToggle={toggleCompletion} onPomodoro={t=>setPomodoroTask(t)}/>}
+        {tab==='tasks'&&<TasksScreen tasks={data.tasks} onDel={delTask} onEdit={t=>openEdit(t,'task')} completions={data.completions||{}} onToggle={toggleCompletion} onPomodoro={t=>setPomodoroTask(t)} onLog={handleLog}/>}
         {tab==='fixed'&&<FixedScreen blocks={data.fixedBlocks} onDel={delFixed} onEdit={b=>openEdit(b,'fixed')}/>}
         {tab==='stats'&&<StatsScreen data={data}/>}
       </div>
