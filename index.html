@@ -1505,10 +1505,10 @@ function LoginScreen(){
         このブラウザではGoogleログインができません。<br/>
         <b>Safariで開き直してください。</b>
       </div>
-      <button onClick={()=>{window.open(location.href,'_blank');}} style={{
-        padding:'12px 24px',background:'#7C3AED',color:'white',border:'none',
-        borderRadius:12,fontSize:14,fontWeight:700,cursor:'pointer',fontFamily:'inherit'
-      }}>Safariで開く</button>
+      <div style={{fontSize:13,color:'#6B7280',lineHeight:1.8,textAlign:'center'}}>
+        📋 右下の <b>「・・・」</b> をタップ<br/>
+        → <b>「ブラウザで開く」</b> を選択
+      </div>
     </div>
   );
   const signIn=async()=>{
