@@ -69,20 +69,26 @@
 
     /* Timeline */
     .tl-wrap{display:flex}
-    .tl-hours{width:40px;position:relative;flex-shrink:0}
-    .tl-hlabel{position:absolute;right:5px;font-size:9px;color:#9E9E9E;font-weight:500;transform:translateY(-6px)}
+    .tl-hours{width:36px;position:relative;flex-shrink:0}
+    .tl-hlabel{position:absolute;right:4px;font-size:9px;color:#9E9E9E;font-weight:500;transform:translateY(-6px)}
     .tl-events{flex:1;position:relative;border-left:2px solid #E0E0E0}
+    .tl-main{position:absolute;left:0;right:34%;top:0;bottom:0}
+    .tl-flex{position:absolute;right:0;width:33%;top:0;bottom:0;border-left:1px dashed #E0E0E0}
+    .tl-flex-label{position:absolute;top:-18px;left:0;right:0;font-size:9px;color:#B0A8C8;font-weight:700;text-align:center}
     .tl-hline{position:absolute;left:0;right:0;border-top:1px solid #F0F0F0;pointer-events:none}
     .tl-hline.maj{border-top-color:#E0E0E0;border-top-width:1.5px}
-    .tl-now{position:absolute;left:-6px;right:0;border-top:2px solid #F9A8D4;z-index:20;pointer-events:none}
-    .tl-now::before{content:'';position:absolute;left:-3px;top:-5px;width:8px;height:8px;background:#F9A8D4;border-radius:50%}
-    .block{position:absolute;left:3px;right:3px;border-radius:7px;padding:4px 7px;overflow:hidden;z-index:10;cursor:pointer}
+    .tl-now{position:absolute;left:-6px;right:0;border-top:2px solid var(--primary-mid);z-index:20;pointer-events:none}
+    .tl-now::before{content:'';position:absolute;left:-3px;top:-5px;width:8px;height:8px;background:var(--primary-mid);border-radius:50%}
+    .block{position:absolute;left:2px;right:2px;border-radius:7px;padding:4px 6px;overflow:hidden;z-index:10}
     .block-name{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .block-time{font-size:9px;margin-top:1px;opacity:.75}
-    .free-slot{position:absolute;left:3px;right:3px;border-radius:7px;background:#F0FDF4;border:1.5px dashed #86EFAC;overflow:hidden;z-index:5;padding:4px 7px}
+    .flex-block{position:absolute;left:2px;right:2px;border-radius:6px;padding:3px 5px;overflow:hidden;z-index:10;border-style:dashed;border-width:1.5px}
+    .flex-block-name{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+    .flex-block-dur{font-size:9px;opacity:0.75;margin-top:1px}
+    .free-slot{position:absolute;left:2px;right:2px;border-radius:7px;background:#F0FDF4;border:1.5px dashed #86EFAC;overflow:hidden;z-index:5;padding:4px 6px}
     .free-label{font-size:9px;color:#6EAF84;font-weight:700}
     .free-sugs{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
-    .free-chip{background:#fff;border:1px solid #86EFAC;border-radius:100px;padding:2px 8px;font-size:9px;color:#5A9E72;cursor:pointer;font-family:inherit;line-height:1.4}
+    .free-chip{background:#fff;border:1px solid #86EFAC;border-radius:100px;padding:2px 7px;font-size:9px;color:#5A9E72;cursor:pointer;font-family:inherit;line-height:1.4}
     .free-chip:active{background:#DCFCE7}
     .free-log-btn{background:none;border:none;font-size:8px;color:#86EFAC;cursor:pointer;font-family:inherit;padding:2px 0;margin-top:2px;display:flex;align-items:center;gap:2px;font-weight:700}
 
@@ -868,97 +874,100 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
 
       {/* Timeline */}
       <div className="tl-wrap">
-        <div className="tl-hours" style={{height:TH,position:'relative'}}>
+        <div className="tl-hours" style={{height:TH+20,position:'relative',paddingTop:20}}>
           {hours.map(h=>(
-            <div key={h} className="tl-hlabel" style={{top:t2px(h*60)}}>
+            <div key={h} className="tl-hlabel" style={{top:t2px(h*60)+20}}>
               {h<24?`${h}:00`:''}
             </div>
           ))}
         </div>
-        <div className="tl-events" style={{height:TH}}>
+        <div className="tl-events" style={{height:TH+20,marginTop:20}}>
           {hours.map(h=>(
             <div key={h} className={`tl-hline${h%3===0?' maj':''}`} style={{top:t2px(h*60)}}/>
           ))}
+          {showNow&&<div className="tl-now" style={{top:t2px(nowMin)}}/>}
 
-          {/* Now line */}
-          {showNow&&(
-            <div className="tl-now" style={{top:t2px(nowMin)}}/>
-          )}
-
-          {/* Free slots */}
-          {slots.map((sl,i)=>{
-            const ht=(sl.dur/60)*PH;
-            if(ht<14)return null;
-            const sugs=suggestFor(sl,data.tasks);
-            return(
-              <div key={i} className="free-slot" style={{top:t2px(sl.start),height:Math.max(ht,18)}}>
-                {ht>=22&&<div className="free-label" style={{display:'flex',alignItems:'center',gap:3}}><IcoSparkle s={9}/>空き {sl.dur}分</div>}
-                {ht>=42&&sugs.length>0&&(
-                  <div className="free-sugs">
-                    {sugs.map(t=>(
-                      <button key={t.id} className="free-chip" onClick={()=>onOpenPomodoro(t)}>{t.name}</button>
-                    ))}
+          {/* 左トラック：時刻固定の予定・空き時間 */}
+          <div className="tl-main">
+            {slots.map((sl,i)=>{
+              const ht=(sl.dur/60)*PH;
+              if(ht<14)return null;
+              const sugs=suggestFor(sl,data.tasks);
+              return(
+                <div key={i} className="free-slot" style={{top:t2px(sl.start),height:Math.max(ht,18)}}>
+                  {ht>=22&&<div className="free-label" style={{display:'flex',alignItems:'center',gap:3}}><IcoSparkle s={9}/>空き {sl.dur}分</div>}
+                  {ht>=42&&sugs.length>0&&(
+                    <div className="free-sugs">
+                      {sugs.map(t=>(
+                        <button key={t.id} className="free-chip" onClick={()=>onOpenPomodoro(t)}>{t.name}</button>
+                      ))}
+                    </div>
+                  )}
+                  {ht>=52&&<button className="free-log-btn" onClick={()=>onOpenPomodoro(null)}>＋ タイマー開始</button>}
+                </div>
+              );
+            })}
+            {dayFixed.filter(b=>b.timeMode!=='range').map(b=>{
+              const c=CAT[b.category]||'#BDBDBD';
+              if(b.endTime<=TS||b.startTime>=TE)return null;
+              const s=Math.max(b.startTime,TS),e=Math.min(b.endTime,TE);
+              const ht=((e-s)/60)*PH;
+              return(
+                <div key={b.id} className="block" style={{top:t2px(s),height:Math.max(ht,20),background:c+'28',border:`2px solid ${c}`}}>
+                  <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
+                    <div className="block-name" style={{color:c}}>{b.name}</div>
+                    {ht>=24&&<button className="skip-btn" onClick={()=>onToggleSkip(dateStr,b.id)} title="この日はスキップ">✕</button>}
                   </div>
-                )}
-                {ht>=52&&(
-                  <button className="free-log-btn" onClick={()=>onOpenPomodoro(null)}>＋ タイマー開始</button>
-                )}
-              </div>
-            );
-          })}
+                  {ht>=32&&<div className="block-time" style={{color:c}}>{fmt(b.startTime)}〜{fmt(b.endTime)}</div>}
+                </div>
+              );
+            })}
+            {dayFixedAll.filter(b=>b.timeMode!=='range'&&daySkips.includes(b.id)&&b.endTime>TS&&b.startTime<TE).map(b=>{
+              const c='#CBD5E1';
+              const s=Math.max(b.startTime,TS),e=Math.min(b.endTime,TE);
+              const ht=((e-s)/60)*PH;
+              return(
+                <div key={'sk'+b.id} className="block" style={{top:t2px(s),height:Math.max(ht,20),background:'#F5F5F7',border:`2px dashed ${c}`,opacity:.6}}>
+                  <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
+                    <div className="block-name" style={{color:c,textDecoration:'line-through'}}>{b.name}</div>
+                    <button className="skip-btn skipped" onClick={()=>onToggleSkip(dateStr,b.id)} title="スキップ解除">↩</button>
+                  </div>
+                  {ht>=32&&<div className="block-time" style={{color:c}}>スキップ</div>}
+                </div>
+              );
+            })}
+          </div>
 
-          {/* Fixed blocks (active today) */}
-          {dayFixed.map(b=>{
-            const c=CAT[b.category]||'#BDBDBD';
-            const isRange=b.timeMode==='range';
-            const bStart=isRange?b.windowStart:b.startTime;
-            const bEnd=isRange?b.windowEnd:b.endTime;
-            if(bEnd<=TS||bStart>=TE)return null;
-            const s=Math.max(bStart,TS),e=Math.min(bEnd,TE);
-            const ht=((e-s)/60)*PH;
-            return(
-              <div key={b.id} className="block" style={{
-                top:t2px(s),height:Math.max(ht,20),
-                background:isRange?c+'14':c+'28',
-                border:isRange?`2px dashed ${c}`:`2px solid ${c}`,
-              }}>
-                <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
-                  <div className="block-name" style={{color:c,opacity:isRange?0.8:1}}>{b.name}</div>
-                  {ht>=24&&<button className="skip-btn" onClick={()=>onToggleSkip(dateStr,b.id)} title="この日はスキップ">✕</button>}
+          {/* 右トラック：時間帯（フレキシブル）予定 */}
+          <div className="tl-flex">
+            <div className="tl-flex-label">時間帯</div>
+            {dayFixed.filter(b=>b.timeMode==='range').map(b=>{
+              const c=CAT[b.category]||'#BDBDBD';
+              if(b.windowEnd<=TS||b.windowStart>=TE)return null;
+              const s=Math.max(b.windowStart,TS),e=Math.min(b.windowEnd,TE);
+              const ht=((e-s)/60)*PH;
+              return(
+                <div key={b.id} className="flex-block" style={{top:t2px(s),height:Math.max(ht,22),background:c+'18',borderColor:c}}>
+                  <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
+                    <div className="flex-block-name" style={{color:c}}>{b.name}</div>
+                    <button className="skip-btn" onClick={()=>onToggleSkip(dateStr,b.id)} title="この日はスキップ" style={{fontSize:9,padding:'1px 3px'}}>✕</button>
+                  </div>
+                  {ht>=36&&<div className="flex-block-dur" style={{color:c}}>〜{b.duration}分</div>}
                 </div>
-                {ht>=28&&(
-                  isRange
-                    ?<div className="block-time" style={{color:c}}>〜{b.duration}分（時間帯内）</div>
-                    :<div className="block-time" style={{color:c}}>{fmt(b.startTime)}〜{fmt(b.endTime)}</div>
-                )}
-              </div>
-            );
-          })}
-          {/* Skipped blocks (shown faded) */}
-          {dayFixedAll.filter(b=>{
-            if(!daySkips.includes(b.id))return false;
-            const bStart=b.timeMode==='range'?b.windowStart:b.startTime;
-            const bEnd=b.timeMode==='range'?b.windowEnd:b.endTime;
-            return bEnd>TS&&bStart<TE;
-          }).map(b=>{
-            const c='#CBD5E1';
-            const bStart=b.timeMode==='range'?b.windowStart:b.startTime;
-            const bEnd=b.timeMode==='range'?b.windowEnd:b.endTime;
-            const s=Math.max(bStart,TS),e=Math.min(bEnd,TE);
-            const ht=((e-s)/60)*PH;
-            return(
-              <div key={'sk'+b.id} className="block" style={{
-                top:t2px(s),height:Math.max(ht,20),
-                background:'#F5F5F7',border:`2px dashed ${c}`,opacity:.6,
-              }}>
-                <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
-                  <div className="block-name" style={{color:c,textDecoration:'line-through'}}>{b.name}</div>
-                  <button className="skip-btn skipped" onClick={()=>onToggleSkip(dateStr,b.id)} title="スキップ解除">↩</button>
+              );
+            })}
+            {dayFixedAll.filter(b=>b.timeMode==='range'&&daySkips.includes(b.id)&&b.windowEnd>TS&&b.windowStart<TE).map(b=>{
+              const c='#CBD5E1';
+              const s=Math.max(b.windowStart,TS),e=Math.min(b.windowEnd,TE);
+              const ht=((e-s)/60)*PH;
+              return(
+                <div key={'sk'+b.id} className="flex-block" style={{top:t2px(s),height:Math.max(ht,22),background:'#F5F5F7',borderColor:c,opacity:.6}}>
+                  <div className="flex-block-name" style={{color:c,textDecoration:'line-through'}}>{b.name}</div>
+                  <button className="skip-btn skipped" onClick={()=>onToggleSkip(dateStr,b.id)} style={{fontSize:9,padding:'1px 3px'}}>↩</button>
                 </div>
-                {ht>=32&&<div className="block-time" style={{color:c}}>スキップ</div>}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
 
           {/* One-time events */}
           {dayEvents.filter(e=>e.endTime>TS&&e.startTime<TE).map(e=>{
