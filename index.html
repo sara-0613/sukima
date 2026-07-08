@@ -249,6 +249,21 @@
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyAi-F8Z6AKUxd51LbVoyr6nT_Apr1hO-jU",
+  authDomain:"sukima-25c44.firebaseapp.com",
+  projectId:"sukima-25c44",
+  storageBucket:"sukima-25c44.firebasestorage.app",
+  messagingSenderId:"557960276918",
+  appId:"1:557960276918:web:6180d80ba27f0dba35af17"
+});
+const auth=firebase.auth();
+const db=firebase.firestore();
+</script>
 <script type="text/babel">
 const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
@@ -436,17 +451,20 @@ function defaults(){
     nextId:10,
   };
 }
-function load(){
-  try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);
-    // migrate: add days to old fixed blocks
-    d.fixedBlocks=d.fixedBlocks.map(b=>({...b,days:b.days||ALL_DAYS}));
-    if(!d.completions)d.completions={};
-    if(!d.logs)d.logs=[];
-    if(!d.skips)d.skips={};
-    return d;}}catch{}
-  return defaults();
+function migrate(d){
+  d.fixedBlocks=d.fixedBlocks.map(b=>({...b,days:b.days||ALL_DAYS}));
+  if(!d.completions)d.completions={};
+  if(!d.logs)d.logs=[];
+  if(!d.skips)d.skips={};
+  return d;
 }
-const save=d=>localStorage.setItem(SK,JSON.stringify(d));
+function loadLocal(){
+  try{const r=localStorage.getItem(SK);if(r)return migrate(JSON.parse(r));}catch{}
+  return null;
+}
+function saveFirestore(uid,d){
+  db.collection('users').doc(uid).collection('data').doc('main').set(d).catch(console.error);
+}
 
 // ===== ALGORITHMS =====
 function getFreeSlots(allBlocks){
@@ -1452,8 +1470,48 @@ function StatsScreen({data}){
 }
 
 // ===== APP =====
+function LoginScreen(){
+  const[loading,setLoading]=useState(false);
+  const signIn=()=>{
+    setLoading(true);
+    const p=new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(p).catch(e=>{console.error(e);setLoading(false);});
+  };
+  return(
+    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+      minHeight:'100dvh',gap:20,padding:32,background:'linear-gradient(160deg,#F5F0FF 0%,#FDF4FF 100%)'}}>
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="34" r="22" fill="#EDE9FE" stroke="#A78BFA" strokeWidth="3"/>
+        <path d="M32 22 L32 34 L40 40" stroke="#A78BFA" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M21 10 L27 16 M43 10 L37 16" stroke="#C4B5FD" strokeWidth="2.5" strokeLinecap="round"/>
+      </svg>
+      <div style={{fontSize:32,fontWeight:900,color:'#7C3AED',letterSpacing:'-0.5px'}}>スキマ</div>
+      <div style={{fontSize:13,color:'#A09AB8',textAlign:'center',lineHeight:1.6}}>
+        隙間時間を賢く活用しよう<br/>
+        <span style={{fontSize:11}}>Googleアカウントでログインするだけで使えます</span>
+      </div>
+      <button onClick={signIn} disabled={loading} style={{
+        display:'flex',alignItems:'center',gap:10,padding:'13px 24px',
+        background:'#fff',border:'1.5px solid #E5E7EB',borderRadius:14,
+        fontSize:14,fontWeight:700,color:'#374151',cursor:'pointer',
+        boxShadow:'0 2px 12px rgba(0,0,0,0.08)',fontFamily:'inherit',
+        opacity:loading?0.6:1,marginTop:8,
+      }}>
+        <svg width="20" height="20" viewBox="0 0 48 48">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>
+        {loading?'ログイン中…':'Googleでログイン'}
+      </button>
+    </div>
+  );
+}
+
 function App(){
-  const[data,setData]=useState(load);
+  const[user,setUser]=useState(undefined); // undefined=初期化中, null=未ログイン, obj=ログイン済
+  const[data,setData]=useState(null);
   const[tab,setTab]=useState('today');
   const[selDate,setSelDate]=useState(null);
   const[calMode,setCalMode]=useState('month'); // 'month'|'week'
@@ -1463,8 +1521,35 @@ function App(){
   const[editItem,setEditItem]=useState(null);
   const[pomodoroTask,setPomodoroTask]=useState(undefined); // undefined=closed, null=no task, task obj=preset
 
+  useEffect(()=>{
+    const unsub=auth.onAuthStateChanged(async u=>{
+      setUser(u);
+      if(u){
+        try{
+          const doc=await db.collection('users').doc(u.uid).collection('data').doc('main').get();
+          if(doc.exists){
+            setData(migrate(doc.data()));
+          } else {
+            // 初回ログイン: localStorageからマイグレーション or デフォルト
+            const local=loadLocal();
+            const d=local||defaults();
+            setData(d);
+            saveFirestore(u.uid,d);
+          }
+        }catch(e){console.error(e);setData(defaults());}
+      } else {
+        setData(null);
+      }
+    });
+    return()=>unsub();
+  },[]);
+
   const mutate=useCallback(fn=>{
-    setData(prev=>{const next=fn(prev);save(next);return next;});
+    setData(prev=>{
+      const next=fn(prev);
+      if(auth.currentUser)saveFirestore(auth.currentUser.uid,next);
+      return next;
+    });
   },[]);
 
   const handleAdd=item=>{
@@ -1613,6 +1698,16 @@ function App(){
     />
   );
 
+  // ローディング中
+  if(user===undefined||( user&&data===null)){
+    return(<div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100dvh',flexDirection:'column',gap:16}}>
+      <div style={{width:40,height:40,border:'4px solid #EDE9FE',borderTopColor:'#A78BFA',borderRadius:'50%',animation:'spin 0.8s linear infinite'}}/>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+      <div style={{color:'#A09AB8',fontSize:13}}>読み込み中…</div>
+    </div>);
+  }
+  if(!user)return <LoginScreen/>;
+
   return(
     <div className="app">
       <div className="hdr">
@@ -1634,8 +1729,14 @@ function App(){
               }
             </div>
           </div>
-          <div className="hdr-badge">
-            今日の空き {tfh>0?`${tfh}h`:''}{tfm>0?`${tfm}m`:tf===0?'0m':''}
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <div className="hdr-badge">
+              今日の空き {tfh>0?`${tfh}h`:''}{tfm>0?`${tfm}m`:tf===0?'0m':''}
+            </div>
+            <button onClick={()=>auth.signOut()} title="ログアウト" style={{
+              background:'rgba(255,255,255,0.25)',border:'none',borderRadius:8,
+              padding:'4px 8px',cursor:'pointer',color:'white',fontSize:11,fontFamily:'inherit',fontWeight:700
+            }}>退出</button>
           </div>
         </div>
       </div>
