@@ -8,8 +8,9 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     :root{
-      --primary:#A78BFA;--pl:#EDE9FE;--bg:#FBF8FF;--card:#fff;
-      --text:#4B4569;--muted:#A09AB8;--border:#EDE9FE;
+      --primary:#A78BFA;--primary-mid:#C4B5FD;--pl:#EDE9FE;--pale:#F3F0FB;
+      --bg:#FBF8FF;--card:#fff;--text:#4B4569;--muted:#A09AB8;--border:#EDE9FE;
+      --grad:var(--grad);
       --shadow:0 2px 16px rgba(167,139,250,.12);--r:18px;--rs:12px;
     }
     html,body,#root{height:100%;overflow-x:hidden}
@@ -17,7 +18,7 @@
     .app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
 
     /* Header */
-    .hdr{background:linear-gradient(135deg,#C4B5FD,#F9A8D4);padding:13px 18px 11px;color:#fff;position:sticky;top:0;z-index:100}
+    .hdr{background:var(--grad);padding:13px 18px 11px;color:#fff;position:sticky;top:0;z-index:100}
     .hdr-row{display:flex;justify-content:space-between;align-items:center}
     .hdr-title{font-size:19px;font-weight:900;display:flex;align-items:center;gap:7px}
     .hdr-sub{font-size:11px;opacity:.85;margin-top:2px}
@@ -59,7 +60,7 @@
     .day-title{font-size:16px;font-weight:900}
     .day-badge{margin-left:auto;background:var(--pl);color:var(--primary);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700}
 
-    .summary-card{background:linear-gradient(135deg,#C4B5FD,#F9A8D4);border-radius:var(--r);padding:14px 16px;color:#fff;margin-bottom:14px}
+    .summary-card{background:var(--grad);border-radius:var(--r);padding:14px 16px;color:#fff;margin-bottom:14px}
     .sum-label{font-size:11px;opacity:.8;margin-bottom:3px}
     .sum-val{font-size:22px;font-weight:900}
     .sum-sub{font-size:12px;opacity:.8;margin-left:5px;font-weight:400}
@@ -121,7 +122,7 @@
     .tcard.done-card{opacity:.65}
 
     /* Stats screen */
-    .stats-hero{background:linear-gradient(135deg,#C4B5FD,#F9A8D4);border-radius:var(--r);padding:18px 18px 16px;color:#fff;margin-bottom:14px}
+    .stats-hero{background:var(--grad);border-radius:var(--r);padding:18px 18px 16px;color:#fff;margin-bottom:14px}
     .stats-hero-label{font-size:11px;opacity:.8;margin-bottom:2px}
     .stats-hero-row{display:flex;align-items:flex-end;gap:6px}
     .stats-hero-num{font-size:36px;font-weight:900;line-height:1}
@@ -147,7 +148,7 @@
     .dow-badge{font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700}
 
     /* FAB */
-    .fab{position:fixed;bottom:72px;right:calc(50% - 226px);width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#C4B5FD,#F9A8D4);color:#fff;border:none;font-size:25px;cursor:pointer;box-shadow:0 4px 16px rgba(167,139,250,.35);display:flex;align-items:center;justify-content:center;z-index:200}
+    .fab{position:fixed;bottom:72px;right:calc(50% - 226px);width:52px;height:52px;border-radius:50%;background:var(--grad);color:#fff;border:none;font-size:25px;cursor:pointer;box-shadow:0 4px 16px rgba(167,139,250,.35);display:flex;align-items:center;justify-content:center;z-index:200}
     @media(max-width:480px){.fab{right:14px}}
     .fab:active{transform:scale(.93)}
 
@@ -220,8 +221,8 @@
     .pomo-btn{flex:1;padding:12px 6px;border:none;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
     .pomo-btn.primary{background:var(--primary);color:#fff}
     .pomo-btn.secondary{background:var(--bg);color:var(--text);border:1.5px solid var(--border)}
-    .pomo-btn.done{background:linear-gradient(135deg,#C4B5FD,#F9A8D4);color:#fff}
-    .pomo-btn.start-big{flex:unset;width:100%;padding:16px;font-size:16px;background:linear-gradient(135deg,#C4B5FD,#F9A8D4);color:#fff;border-radius:var(--r)}
+    .pomo-btn.done{background:var(--grad);color:#fff}
+    .pomo-btn.start-big{flex:unset;width:100%;padding:16px;font-size:16px;background:var(--grad);color:#fff;border-radius:var(--r)}
     .pomo-picker{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;max-height:200px;overflow-y:auto}
     .pomo-task-chip{background:#fff;border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 13px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;text-align:left;display:flex;align-items:center;gap:8px}
     .pomo-task-chip.on{border-color:var(--primary);background:var(--pl);color:var(--primary)}
@@ -245,7 +246,7 @@
   </style>
 </head>
 <body>
-<style id="hdr-grad-style">.hdr{background:linear-gradient(135deg,#C4B5FD,#F9A8D4)}</style>
+<style id="hdr-grad-style">.hdr{background:var(--grad)}</style>
 <div id="root"></div>
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -320,7 +321,7 @@ function IcoMoon({s=13}){const c='#818CF8';return(
     <path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" fill={c+'44'} stroke={c} strokeWidth="1.6"/>
   </svg>
 );}
-function IcoClock({s=13}){const c='#A78BFA';return(
+function IcoClock({s=13}){const c='var(--primary)';return(
   <svg width={s} height={s} viewBox="0 0 24 24" fill="none" style={IS}>
     <circle cx="12" cy="12" r="9" fill={c+'22'} stroke={c} strokeWidth="1.6"/>
     <path d="M12 7v5l3 2" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -344,9 +345,9 @@ function IcoPrioLow({s=12}){return(
     <path d="M12 8v6M9 12l3 3 3-3" stroke="#4ADE80" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );}
-function EmptyIllustTasks(){const c='#A78BFA';return(
+function EmptyIllustTasks(){const c='var(--primary)';return(
   <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-    <rect width="72" height="72" rx="20" fill="#EDE9FE"/>
+    <rect width="72" height="72" rx="20" fill="var(--pl)"/>
     <rect x="20" y="22" width="32" height="5" rx="2.5" fill={c} opacity="0.35"/>
     <rect x="20" y="33" width="25" height="5" rx="2.5" fill={c} opacity="0.6"/>
     <rect x="20" y="44" width="28" height="5" rx="2.5" fill={c} opacity="0.25"/>
@@ -355,9 +356,9 @@ function EmptyIllustTasks(){const c='#A78BFA';return(
     <rect x="10" y="44" width="6" height="6" rx="2" fill={c} opacity="0.4"/>
   </svg>
 );}
-function EmptyIllustFixed(){const c='#A78BFA';return(
+function EmptyIllustFixed(){const c='var(--primary)';return(
   <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-    <rect width="72" height="72" rx="20" fill="#EDE9FE"/>
+    <rect width="72" height="72" rx="20" fill="var(--pl)"/>
     <rect x="10" y="24" width="52" height="38" rx="6" fill="white" opacity="0.5" stroke={c} strokeWidth="1.5"/>
     <path d="M10 34h52" stroke={c} strokeWidth="1.3" opacity="0.4"/>
     <rect x="24" y="14" width="6" height="14" rx="3" fill={c} opacity="0.65"/>
@@ -367,9 +368,9 @@ function EmptyIllustFixed(){const c='#A78BFA';return(
     <circle cx="50" cy="46" r="4" fill={c} opacity="0.3"/>
   </svg>
 );}
-function EmptyIllustStats(){const c='#A78BFA';return(
+function EmptyIllustStats(){const c='var(--primary)';return(
   <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-    <rect width="72" height="72" rx="20" fill="#EDE9FE"/>
+    <rect width="72" height="72" rx="20" fill="var(--pl)"/>
     <rect x="12" y="48" width="12" height="16" rx="3" fill={c} opacity="0.4"/>
     <rect x="30" y="36" width="12" height="28" rx="3" fill={c} opacity="0.7"/>
     <rect x="48" y="26" width="12" height="38" rx="3" fill={c} opacity="0.35"/>
@@ -382,22 +383,24 @@ function EmptyIllustStats(){const c='#A78BFA';return(
 
 // ===== THEMES =====
 const THEMES={
-  lavender:{name:'ラベンダー',primary:'#A78BFA',pl:'#EDE9FE',border:'#EDE9FE',bg:'#FBF8FF',grad:'135deg,#C4B5FD,#F9A8D4',dot:'#C4B5FD'},
-  sky:     {name:'スカイ',    primary:'#38BDF8',pl:'#E0F2FE',border:'#E0F2FE',bg:'#F0FAFF',grad:'135deg,#7DD3FC,#6EE7B7',dot:'#7DD3FC'},
-  mint:    {name:'ミント',    primary:'#34D399',pl:'#D1FAE5',border:'#D1FAE5',bg:'#F0FDF4',grad:'135deg,#6EE7B7,#86EFAC',dot:'#6EE7B7'},
-  sunset:  {name:'サンセット',primary:'#FB923C',pl:'#FFEDD5',border:'#FFE4CC',bg:'#FFFBF7',grad:'135deg,#FCA5A5,#FCD34D',dot:'#FCA5A5'},
-  night:   {name:'ナイト',    primary:'#818CF8',pl:'#EEF2FF',border:'#E0E7FF',bg:'#F5F7FF',grad:'135deg,#818CF8,#A5B4FC',dot:'#A5B4FC'},
+  lavender:{name:'ラベンダー',primary:'#A78BFA',mid:'#C4B5FD',pl:'#EDE9FE',pale:'#F3F0FB',border:'#EDE9FE',bg:'#FBF8FF',grad:'linear-gradient(135deg,#C4B5FD,#F9A8D4)'},
+  sky:     {name:'スカイ',    primary:'#38BDF8',mid:'#7DD3FC',pl:'#E0F2FE',pale:'#F0F9FF',border:'#E0F2FE',bg:'#F0FAFF',grad:'linear-gradient(135deg,#7DD3FC,#6EE7B7)'},
+  mint:    {name:'ミント',    primary:'#34D399',mid:'#6EE7B7',pl:'#D1FAE5',pale:'#ECFDF5',border:'#D1FAE5',bg:'#F0FDF4',grad:'linear-gradient(135deg,#6EE7B7,#86EFAC)'},
+  sunset:  {name:'サンセット',primary:'#FB923C',mid:'#FCA5A5',pl:'#FFEDD5',pale:'#FFF7ED',border:'#FFE4CC',bg:'#FFFBF7',grad:'linear-gradient(135deg,#FCA5A5,#FCD34D)'},
+  night:   {name:'ナイト',    primary:'#818CF8',mid:'#A5B4FC',pl:'#EEF2FF',pale:'#F5F7FF',border:'#E0E7FF',bg:'#F5F7FF',grad:'linear-gradient(135deg,#818CF8,#A5B4FC)'},
 };
 const SK_THEME='sukima_theme';
 function applyTheme(id){
   const t=THEMES[id]||THEMES.lavender;
   const r=document.documentElement.style;
   r.setProperty('--primary',t.primary);
+  r.setProperty('--primary-mid',t.mid);
   r.setProperty('--pl',t.pl);
+  r.setProperty('--pale',t.pale);
   r.setProperty('--border',t.border);
   r.setProperty('--bg',t.bg);
-  document.getElementById('hdr-grad-style')&&(document.getElementById('hdr-grad-style').textContent=
-    `.hdr{background:linear-gradient(${t.grad})}`);
+  r.setProperty('--grad',t.grad);
+  r.setProperty('--shadow',`0 2px 16px ${t.primary}28`);
 }
 
 // ===== CONSTANTS =====
@@ -610,9 +613,9 @@ function PomodoroModal({onClose,onSave,tasks,dateStr,preTask}){
         </div>
         <div className="pomo-ring-wrap">
           <svg width="130" height="130" viewBox="0 0 130 130" style={{display:'block',margin:'0 auto'}}>
-            <circle cx="65" cy="65" r={R} fill="none" stroke="#EDE9FE" strokeWidth="10"/>
+            <circle cx="65" cy="65" r={R} fill="none" stroke="var(--pl)" strokeWidth="10"/>
             <circle cx="65" cy="65" r={R} fill="none"
-              stroke={phase==='break'?'#FDE68A':'#A78BFA'} strokeWidth="10"
+              stroke={phase==='break'?'#FDE68A':'var(--primary)'} strokeWidth="10"
               strokeDasharray={C} strokeDashoffset={C*(1-pct)} strokeLinecap="round"
               transform="rotate(-90 65 65)" style={{transition:'stroke-dashoffset .5s'}}/>
           </svg>
@@ -989,12 +992,12 @@ function TasksScreen({tasks,onDel,onEdit,completions,onToggle,onPomodoro}){
               <div className="cdot" style={{background:CAT[t.category]||'#BDBDBD'}}/>
               <div style={{flex:1,minWidth:0}}>
                 <div className="tname" style={done?{textDecoration:'line-through',opacity:.6}:{}}>{t.name}</div>
-                <div className="tmeta"><IcoTimerSvg c="#C4B5FD" s={11}/> {fmtDur(t.minDur,t.maxDur)} · {FL[t.freq]} · {TL[t.pref]}</div>
+                <div className="tmeta"><IcoTimerSvg c="var(--primary-mid)" s={11}/> {fmtDur(t.minDur,t.maxDur)} · {FL[t.freq]} · {TL[t.pref]}</div>
                 {t.deadline&&<span className={`deadline-badge${soon?' soon':''}`}><IcoClock s={9}/>{dl===0?'今日まで':dl<0?`${-dl}日超過`:`あと${dl}日`}</span>}
               </div>
               <span className="pbadge" style={{background:PC[t.priority]+'20',color:PC[t.priority],display:'flex',alignItems:'center',gap:3}}>{PI[t.priority]}{PL[t.priority]}</span>
               <button className="ebtn" title="開始" onClick={()=>onPomodoro(t)}>
-                <svg width={26} height={26} viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="9" fill="#EDE9FE"/><circle cx="16" cy="16" r="7" fill="#DDD6FE" stroke="#A78BFA" strokeWidth="1.5"/><path d="M14 13l6 3-6 3V13z" fill="#A78BFA"/></svg>
+                <svg width={26} height={26} viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="9" fill="var(--pl)"/><circle cx="16" cy="16" r="7" fill="var(--primary-mid)" stroke="var(--primary)" strokeWidth="1.5" opacity="0.6"/><path d="M14 13l6 3-6 3V13z" fill="var(--primary)"/></svg>
               </button>
               <button className="ebtn" onClick={()=>onEdit(t)}><PencilIcon size={26}/></button>
               <button className="dbtn" onClick={()=>setConfirm(t)}>×</button>
@@ -1331,11 +1334,11 @@ function LogModal({onClose,onSave,tasks,dateStr,preTask,slotDur}){
 
 // ===== PENCIL ICON =====
 function PencilIcon({size=22}){
-  const c='#A78BFA';
+  const c='var(--primary)';
   return(
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-      <rect width="32" height="32" rx="9" fill="#EDE9FE"/>
-      <path d="M20 8.5 L23.5 12 L13 22.5 L9 23 L9.5 19 Z" fill="#DDD6FE" stroke={c} strokeWidth="1.8" strokeLinejoin="round"/>
+      <rect width="32" height="32" rx="9" fill="var(--pl)"/>
+      <path d="M20 8.5 L23.5 12 L13 22.5 L9 23 L9.5 19 Z" fill="var(--primary-mid)" stroke={c} strokeWidth="1.8" strokeLinejoin="round" opacity="0.8"/>
       <path d="M18 10.5 L21.5 14" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
     </svg>
   );
@@ -1433,10 +1436,10 @@ function StatsScreen({data}){
           <div className="stat-card-label">達成した日数</div>
         </div>
         <div className="stat-card">
-          <div className="stat-card-icon" style={{background:'#EDE9FE'}}>
+          <div className="stat-card-icon" style={{background:'var(--pl)'}}>
             <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
-              <circle cx="16" cy="16" r="10" fill="#DDD6FE" stroke="#A78BFA" strokeWidth="1.8"/>
-              <path d="M16 10 L16 16 L20 19" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="16" cy="16" r="10" fill="var(--primary-mid)" stroke="var(--primary)" strokeWidth="1.8" opacity="0.7"/>
+              <path d="M16 10 L16 16 L20 19" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
           <div className="stat-card-val">{totalDone>0?Math.round(studyMin/totalDone*10)/10:0}</div>
@@ -1530,9 +1533,9 @@ function LoginScreen(){
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
       minHeight:'100dvh',gap:20,padding:32,background:'linear-gradient(160deg,#F5F0FF 0%,#FDF4FF 100%)'}}>
       <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-        <circle cx="32" cy="34" r="22" fill="#EDE9FE" stroke="#A78BFA" strokeWidth="3"/>
-        <path d="M32 22 L32 34 L40 40" stroke="#A78BFA" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M21 10 L27 16 M43 10 L37 16" stroke="#C4B5FD" strokeWidth="2.5" strokeLinecap="round"/>
+        <circle cx="32" cy="34" r="22" fill="var(--pl)" stroke="var(--primary)" strokeWidth="3"/>
+        <path d="M32 22 L32 34 L40 40" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M21 10 L27 16 M43 10 L37 16" stroke="var(--primary-mid)" strokeWidth="2.5" strokeLinecap="round"/>
       </svg>
       <div style={{fontSize:32,fontWeight:900,color:'#7C3AED',letterSpacing:'-0.5px'}}>スキマ</div>
       <div style={{fontSize:13,color:'#A09AB8',textAlign:'center',lineHeight:1.6}}>
@@ -1685,7 +1688,7 @@ function App(){
   // ローディング・未ログイン
   if(user===undefined||(user&&data===null)){
     return(<div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100dvh',flexDirection:'column',gap:16}}>
-      <div style={{width:40,height:40,border:'4px solid #EDE9FE',borderTopColor:'#A78BFA',borderRadius:'50%',animation:'spin 0.8s linear infinite'}}/>
+      <div style={{width:40,height:40,border:'4px solid var(--pl)',borderTopColor:'var(--primary)',borderRadius:'50%',animation:'spin 0.8s linear infinite'}}/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       <div style={{color:'#A09AB8',fontSize:13}}>読み込み中…</div>
     </div>);
@@ -1700,16 +1703,16 @@ function App(){
   const tf=todayFree.reduce((s,sl)=>s+sl.dur,0);
   const tfh=Math.floor(tf/60),tfm=tf%60;
 
-  const NavToday=({active})=>{const c=active?'#A78BFA':'#A09AB8';return(
+  const NavToday=({active})=>{const c=active?'var(--primary)':'#A09AB8';return(
     <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-      <circle cx="16" cy="17" r="10" fill={active?'#EDE9FE':'#F3F0FB'} stroke={c} strokeWidth="2"/>
+      <circle cx="16" cy="17" r="10" fill={active?'var(--pl)':'var(--pale)'} stroke={c} strokeWidth="2"/>
       <path d="M16 11 L16 17 L20 20" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M11 5 L14 8 M21 5 L18 8" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
     </svg>
   );};
-  const NavCal=({active})=>{const c=active?'#A78BFA':'#A09AB8';return(
+  const NavCal=({active})=>{const c=active?'var(--primary)':'#A09AB8';return(
     <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-      <rect x="4" y="7" width="24" height="21" rx="5" fill={active?'#EDE9FE':'#F3F0FB'} stroke={c} strokeWidth="2"/>
+      <rect x="4" y="7" width="24" height="21" rx="5" fill={active?'var(--pl)':'var(--pale)'} stroke={c} strokeWidth="2"/>
       <path d="M4 13h24" stroke={c} strokeWidth="1.5"/>
       <rect x="10" y="3" width="3" height="7" rx="1.5" fill={c}/>
       <rect x="19" y="3" width="3" height="7" rx="1.5" fill={c}/>
@@ -1718,23 +1721,23 @@ function App(){
       <circle cx="21" cy="20" r="2" fill={c} opacity="0.7"/>
     </svg>
   );};
-  const NavCheck=({active})=>{const c=active?'#A78BFA':'#A09AB8';return(
+  const NavCheck=({active})=>{const c=active?'var(--primary)':'#A09AB8';return(
     <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-      <rect x="4" y="6" width="24" height="20" rx="5" fill={active?'#EDE9FE':'#F3F0FB'} stroke={c} strokeWidth="2"/>
+      <rect x="4" y="6" width="24" height="20" rx="5" fill={active?'var(--pl)':'var(--pale)'} stroke={c} strokeWidth="2"/>
       <path d="M10 16 L14 20 L22 12" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   );};
-  const NavPin=({active})=>{const c=active?'#A78BFA':'#A09AB8';return(
+  const NavPin=({active})=>{const c=active?'var(--primary)':'#A09AB8';return(
     <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-      <path d="M16 4 C11 4 7 8 7 13 C7 20 16 28 16 28 C16 28 25 20 25 13 C25 8 21 4 16 4Z" fill={active?'#EDE9FE':'#F3F0FB'} stroke={c} strokeWidth="2"/>
+      <path d="M16 4 C11 4 7 8 7 13 C7 20 16 28 16 28 C16 28 25 20 25 13 C25 8 21 4 16 4Z" fill={active?'var(--pl)':'var(--pale)'} stroke={c} strokeWidth="2"/>
       <circle cx="16" cy="13" r="4" fill={c} opacity="0.7"/>
     </svg>
   );};
-  const NavStats=({active})=>{const c=active?'#A78BFA':'#A09AB8';return(
+  const NavStats=({active})=>{const c=active?'var(--primary)':'#A09AB8';return(
     <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-      <rect x="4" y="18" width="5" height="10" rx="2" fill={active?'#DDD6FE':'#EDE9FE'} stroke={c} strokeWidth="1.8"/>
-      <rect x="11" y="12" width="5" height="16" rx="2" fill={active?'#DDD6FE':'#EDE9FE'} stroke={c} strokeWidth="1.8"/>
-      <rect x="18" y="6" width="5" height="22" rx="2" fill={active?'#DDD6FE':'#EDE9FE'} stroke={c} strokeWidth="1.8"/>
+      <rect x="4" y="18" width="5" height="10" rx="2" fill={active?'var(--primary-mid)':'var(--pl)'} stroke={c} strokeWidth="1.8" opacity={active?0.9:0.5}/>
+      <rect x="11" y="12" width="5" height="16" rx="2" fill={active?'var(--primary-mid)':'var(--pl)'} stroke={c} strokeWidth="1.8" opacity={active?0.9:0.5}/>
+      <rect x="18" y="6" width="5" height="22" rx="2" fill={active?'var(--primary-mid)':'var(--pl)'} stroke={c} strokeWidth="1.8" opacity={active?0.9:0.5}/>
       <path d="M6.5 15 L13.5 9 L20.5 5" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6"/>
     </svg>
   );};
