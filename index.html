@@ -1271,12 +1271,44 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
               <label className="fl">予定名</label>
               <input className="fi" placeholder="例：授業、通学、バイト…" value={fname} onChange={onFnameCh}/>
             </div>
-            <div className="form-row">
-              <div className="fg"><label className="fl">開始時刻</label>
-                <input className="fi fi-sm" type="time" value={fst} onChange={e=>setFst(e.target.value)}/></div>
-              <div className="fg"><label className="fl">終了時刻</label>
-                <input className="fi fi-sm" type="time" value={fen} onChange={e=>setFen(e.target.value)}/></div>
+            <div className="fg">
+              <label className="fl">時間の設定方法</label>
+              <div style={{display:'flex',gap:8,marginTop:4}}>
+                <button type="button" onClick={()=>setFtimeMode('exact')} style={{
+                  flex:1,padding:'8px 4px',border:'1.5px solid',borderRadius:10,fontSize:12,fontFamily:'inherit',cursor:'pointer',fontWeight:700,
+                  borderColor:ftimeMode==='exact'?'var(--primary)':'var(--border)',
+                  background:ftimeMode==='exact'?'var(--pl)':'#fff',
+                  color:ftimeMode==='exact'?'var(--primary)':'#A09AB8',
+                }}>⏰ 時刻固定<br/><span style={{fontSize:10,fontWeight:400}}>何時〜何時</span></button>
+                <button type="button" onClick={()=>setFtimeMode('range')} style={{
+                  flex:1,padding:'8px 4px',border:'1.5px solid',borderRadius:10,fontSize:12,fontFamily:'inherit',cursor:'pointer',fontWeight:700,
+                  borderColor:ftimeMode==='range'?'var(--primary)':'var(--border)',
+                  background:ftimeMode==='range'?'var(--pl)':'#fff',
+                  color:ftimeMode==='range'?'var(--primary)':'#A09AB8',
+                }}>🕐 時間帯指定<br/><span style={{fontSize:10,fontWeight:400}}>〇時〜△時の間に何分</span></button>
+              </div>
             </div>
+            {ftimeMode==='exact'?(
+              <div className="form-row">
+                <div className="fg"><label className="fl">開始時刻</label>
+                  <input className="fi fi-sm" type="time" value={fst} onChange={e=>setFst(e.target.value)}/></div>
+                <div className="fg"><label className="fl">終了時刻</label>
+                  <input className="fi fi-sm" type="time" value={fen} onChange={e=>setFen(e.target.value)}/></div>
+              </div>
+            ):(
+              <>
+                <div className="form-row">
+                  <div className="fg"><label className="fl">時間帯・開始</label>
+                    <input className="fi fi-sm" type="time" value={fwinStart} onChange={e=>setFwinStart(e.target.value)}/></div>
+                  <div className="fg"><label className="fl">時間帯・終了</label>
+                    <input className="fi fi-sm" type="time" value={fwinEnd} onChange={e=>setFwinEnd(e.target.value)}/></div>
+                </div>
+                <div className="fg">
+                  <label className="fl">所要時間（分）</label>
+                  <input className="fi fi-sm" type="number" min="1" max="480" placeholder="30" value={fDuration} onChange={e=>setFDuration(e.target.value)}/>
+                </div>
+              </>
+            )}
             <div className="fg">
               <label className="fl">繰り返す曜日</label>
               <div className="dow-chips">
