@@ -1493,18 +1493,20 @@ function StatsScreen({data}){
 // ===== APP =====
 function LoginScreen(){
   const[loading,setLoading]=useState(false);
+  const[err,setErr]=useState('');
   const signIn=async()=>{
-    setLoading(true);
+    setLoading(true);setErr('');
     const p=new firebase.auth.GoogleAuthProvider();
     try{
       await auth.signInWithPopup(p);
     }catch(e){
-      if(e.code==='auth/popup-blocked'||e.code==='auth/popup-closed-by-user'){
-        auth.signInWithRedirect(p).catch(console.error);
+      console.error(e);
+      if(e.code==='auth/popup-closed-by-user'){
+        setErr('');
       } else {
-        console.error(e);
-        setLoading(false);
+        setErr('ログインできませんでした。もう一度試してください。');
       }
+      setLoading(false);
     }
   };
   return(
@@ -1535,6 +1537,7 @@ function LoginScreen(){
         </svg>
         {loading?'ログイン中…':'Googleでログイン'}
       </button>
+      {err&&<div style={{fontSize:12,color:'#EF4444',textAlign:'center',marginTop:4}}>{err}</div>}
     </div>
   );
 }
@@ -1557,7 +1560,6 @@ function App(){
   const changeTheme=id=>{setThemeId(id);localStorage.setItem(SK_THEME,id);setShowTheme(false);};
 
   useEffect(()=>{
-    auth.getRedirectResult().catch(console.error);
     const unsub=auth.onAuthStateChanged(async u=>{
       setUser(u);
       if(u){
