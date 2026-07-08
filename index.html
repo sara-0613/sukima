@@ -1827,17 +1827,10 @@ function App(){
               今日の空き {tfh>0?`${tfh}h`:''}{tfm>0?`${tfm}m`:tf===0?'0m':''}
             </div>
             <button onClick={()=>setShowTheme(v=>!v)} title="テーマ変更" style={{
-              background:'rgba(255,255,255,0.25)',border:'none',borderRadius:8,
-              padding:'5px 6px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',
+              background:'rgba(255,255,255,0.25)',border:'none',borderRadius:'50%',
+              padding:0,cursor:'pointer',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,
             }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M12 3C7 3 3 7 3 12c0 4.4 3.2 8 7.5 8.8.5.1 1-.3 1-0.8v-1c0-.5.4-.9.9-.8 3.8.5 6.6-1.7 6.6-5.2C19 8.1 15.9 3 12 3z" fill="rgba(255,255,255,0.25)" stroke="white" strokeWidth="1.5"/>
-                <circle cx="8"  cy="10" r="1.4" fill="white" opacity="0.9"/>
-                <circle cx="12" cy="7.5" r="1.4" fill="white" opacity="0.7"/>
-                <circle cx="16" cy="10" r="1.4" fill="white" opacity="0.9"/>
-                <circle cx="15.5" cy="14" r="1.4" fill="white" opacity="0.7"/>
-                <circle cx="11" cy="15.5" r="1.4" fill="white" opacity="0.9"/>
-              </svg>
+              <div style={{width:18,height:18,borderRadius:'50%',background:THEMES[themeId]?.primary||'var(--primary)',border:'2.5px solid white',boxShadow:'0 1px 4px rgba(0,0,0,0.2)'}}/>
             </button>
             <button onClick={()=>auth.signOut()} title="ログアウト" style={{
               background:'rgba(255,255,255,0.25)',border:'none',borderRadius:8,
@@ -1857,10 +1850,22 @@ function App(){
                     background:themeId===id?t.pl:'none',border:themeId===id?`1.5px solid ${t.primary}`:'1.5px solid transparent',
                     borderRadius:8,cursor:'pointer',fontFamily:'inherit',fontSize:13,color:'var(--text)',fontWeight:themeId===id?700:400,
                   }}>
-                    <div style={{width:14,height:14,borderRadius:'50%',background:`linear-gradient(${t.grad})`,flexShrink:0}}/>
+                    <div style={{width:14,height:14,borderRadius:'50%',background:t.grad,flexShrink:0}}/>
                     {t.name}
                   </button>
                 ))}
+                <div style={{borderTop:'1px solid var(--border)',marginTop:4,paddingTop:8}}>
+                  <button onClick={()=>{
+                    setShowTheme(false);
+                    if(window.confirm('データをリセットしますか？\nタスク・固定予定・記録がすべて初期状態に戻ります。')){
+                      const d=defaults();
+                      mutate(()=>d);
+                    }
+                  }} style={{
+                    width:'100%',padding:'7px 8px',background:'none',border:'1.5px solid #FCA5A5',
+                    borderRadius:8,cursor:'pointer',fontFamily:'inherit',fontSize:12,color:'#EF4444',fontWeight:700,
+                  }}>データをリセット</button>
+                </div>
               </div>
             )}
           </div>
