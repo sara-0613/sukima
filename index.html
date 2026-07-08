@@ -1493,10 +1493,19 @@ function StatsScreen({data}){
 // ===== APP =====
 function LoginScreen(){
   const[loading,setLoading]=useState(false);
-  const signIn=()=>{
+  const signIn=async()=>{
     setLoading(true);
     const p=new firebase.auth.GoogleAuthProvider();
-    auth.signInWithRedirect(p).catch(e=>{console.error(e);setLoading(false);});
+    try{
+      await auth.signInWithPopup(p);
+    }catch(e){
+      if(e.code==='auth/popup-blocked'||e.code==='auth/popup-closed-by-user'){
+        auth.signInWithRedirect(p).catch(console.error);
+      } else {
+        console.error(e);
+        setLoading(false);
+      }
+    }
   };
   return(
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
