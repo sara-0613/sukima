@@ -829,7 +829,7 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
   const dayEvents=data.events.filter(e=>e.date===dateStr);
   const normFixed=b=>b.timeMode==='range'?{...b,startTime:b.windowStart,endTime:b.windowStart+b.duration}:b;
   const allBlocks=[
-    ...dayFixed.filter(b=>b.timeMode!=='range').map(b=>({...b,isFixed:true})),
+    ...dayFixed.map(b=>({...normFixed(b),isFixed:true})),
     ...dayEvents.map(e=>({...e,isEvent:true})),
   ];
   const slots=getFreeSlots(allBlocks);
@@ -1772,9 +1772,9 @@ function App(){
     </svg>
   );};
   const tabInfo=[
-    {id:'today', NavIcon:NavToday, label:'今日'},
     {id:'cal',   NavIcon:NavCal,   label:'カレンダー'},
     {id:'tasks', NavIcon:NavCheck, label:'タスク'},
+    {id:'today', NavIcon:NavToday, label:'今日'},
     {id:'fixed', NavIcon:NavPin,   label:'固定予定'},
     {id:'stats', NavIcon:NavStats, label:'記録'},
   ];
