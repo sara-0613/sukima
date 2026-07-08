@@ -830,7 +830,7 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
   return(
     <div>
       <div className="day-header">
-        <button className="back-btn" onClick={onBack}>‹</button>
+        {onBack&&<button className="back-btn" onClick={onBack}>‹</button>}
         <span className="day-title">{label}</span>
         <span className="day-badge">{fh>0?`${fh}h`:''}{fm>0?`${fm}m`:totalFree===0?'空きなし':''} 空き</span>
       </div>
