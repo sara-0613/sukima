@@ -829,7 +829,7 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
   const dayEvents=data.events.filter(e=>e.date===dateStr);
   const normFixed=b=>b.timeMode==='range'?{...b,startTime:b.windowStart,endTime:b.windowStart+b.duration}:b;
   const allBlocks=[
-    ...dayFixed.map(b=>({...normFixed(b),isFixed:true})),
+    ...dayFixed.filter(b=>b.timeMode!=='range').map(b=>({...b,isFixed:true})),
     ...dayEvents.map(e=>({...e,isEvent:true})),
   ];
   const slots=getFreeSlots(allBlocks);
@@ -922,20 +922,6 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
                 </div>
               );
             })}
-            {dayFixedAll.filter(b=>b.timeMode!=='range'&&daySkips.includes(b.id)&&b.endTime>TS&&b.startTime<TE).map(b=>{
-              const c='#CBD5E1';
-              const s=Math.max(b.startTime,TS),e=Math.min(b.endTime,TE);
-              const ht=((e-s)/60)*PH;
-              return(
-                <div key={'sk'+b.id} className="block" style={{top:t2px(s),height:Math.max(ht,20),background:'#F5F5F7',border:`2px dashed ${c}`,opacity:.6}}>
-                  <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
-                    <div className="block-name" style={{color:c,textDecoration:'line-through'}}>{b.name}</div>
-                    <button className="skip-btn skipped" onClick={()=>onToggleSkip(dateStr,b.id)} title="スキップ解除">↩</button>
-                  </div>
-                  {ht>=32&&<div className="block-time" style={{color:c}}>スキップ</div>}
-                </div>
-              );
-            })}
           </div>
 
           {/* 右トラック：時間帯（フレキシブル）予定 */}
@@ -953,17 +939,6 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
                     <button className="skip-btn" onClick={()=>onToggleSkip(dateStr,b.id)} title="この日はスキップ" style={{fontSize:9,padding:'1px 3px'}}>✕</button>
                   </div>
                   {ht>=36&&<div className="flex-block-dur" style={{color:c}}>〜{b.duration}分</div>}
-                </div>
-              );
-            })}
-            {dayFixedAll.filter(b=>b.timeMode==='range'&&daySkips.includes(b.id)&&b.windowEnd>TS&&b.windowStart<TE).map(b=>{
-              const c='#CBD5E1';
-              const s=Math.max(b.windowStart,TS),e=Math.min(b.windowEnd,TE);
-              const ht=((e-s)/60)*PH;
-              return(
-                <div key={'sk'+b.id} className="flex-block" style={{top:t2px(s),height:Math.max(ht,22),background:'#F5F5F7',borderColor:c,opacity:.6}}>
-                  <div className="flex-block-name" style={{color:c,textDecoration:'line-through'}}>{b.name}</div>
-                  <button className="skip-btn skipped" onClick={()=>onToggleSkip(dateStr,b.id)} style={{fontSize:9,padding:'1px 3px'}}>↩</button>
                 </div>
               );
             })}
@@ -1538,7 +1513,7 @@ function StatsScreen({data}){
 }
 
 // ===== APP =====
-function LoginScreen(){
+function LoginScreen({onGuest}){
   const[loading,setLoading]=useState(false);
   const[err,setErr]=useState('');
   const ua=navigator.userAgent||'';
@@ -1602,12 +1577,22 @@ function LoginScreen(){
         {loading?'ログイン中…':'Googleでログイン'}
       </button>
       {err&&<div style={{fontSize:12,color:'#EF4444',textAlign:'center',marginTop:4}}>{err}</div>}
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:6,marginTop:4}}>
+        <button onClick={onGuest} style={{
+          padding:'10px 24px',background:'transparent',border:'1.5px solid var(--border)',
+          borderRadius:14,fontSize:13,fontWeight:600,color:'#A09AB8',cursor:'pointer',fontFamily:'inherit',
+        }}>ゲストで試す</button>
+        <div style={{fontSize:11,color:'#C4BDD8',textAlign:'center',lineHeight:1.5}}>
+          ※ゲストモードではデータが保存されません<br/>ブラウザを閉じると消えます
+        </div>
+      </div>
     </div>
   );
 }
 
 function App(){
   const[user,setUser]=useState(undefined); // undefined=初期化中, null=未ログイン, obj=ログイン済
+  const[isGuest,setIsGuest]=useState(false);
   const[data,setData]=useState(null);
   const[tab,setTab]=useState('today');
   const[selDate,setSelDate]=useState(null);
@@ -1652,7 +1637,7 @@ function App(){
       if(auth.currentUser)saveFirestore(auth.currentUser.uid,next);
       return next;
     });
-  },[]);
+  },[isGuest]);
 
   const handleAdd=item=>{
     mutate(prev=>{
@@ -1737,7 +1722,8 @@ function App(){
       <div style={{color:'#A09AB8',fontSize:13}}>読み込み中…</div>
     </div>);
   }
-  if(!user)return <LoginScreen/>;
+  if(!user&&!isGuest)return <LoginScreen onGuest={()=>{setIsGuest(true);setData(defaults());}}/>;
+  if(isGuest&&data===null)return <LoginScreen onGuest={()=>{setIsGuest(true);setData(defaults());}}/>;
 
   // Header info
   const todayStr=today();
@@ -1841,10 +1827,16 @@ function App(){
             }}>
               <div style={{width:18,height:18,borderRadius:'50%',background:THEMES[themeId]?.primary||'var(--primary)',border:'2.5px solid white',boxShadow:'0 1px 4px rgba(0,0,0,0.2)'}}/>
             </button>
-            <button onClick={()=>auth.signOut()} title="ログアウト" style={{
-              background:'rgba(255,255,255,0.25)',border:'none',borderRadius:8,
-              padding:'4px 8px',cursor:'pointer',color:'white',fontSize:11,fontFamily:'inherit',fontWeight:700
-            }}>ログアウト</button>
+            {isGuest
+              ? <button onClick={()=>{setIsGuest(false);setData(null);}} title="ログインして保存" style={{
+                  background:'rgba(255,255,255,0.25)',border:'none',borderRadius:8,
+                  padding:'4px 8px',cursor:'pointer',color:'white',fontSize:11,fontFamily:'inherit',fontWeight:700
+                }}>ログイン</button>
+              : <button onClick={()=>auth.signOut()} title="ログアウト" style={{
+                  background:'rgba(255,255,255,0.25)',border:'none',borderRadius:8,
+                  padding:'4px 8px',cursor:'pointer',color:'white',fontSize:11,fontFamily:'inherit',fontWeight:700
+                }}>ログアウト</button>
+            }
             {showTheme&&(
               <div style={{
                 position:'absolute',top:'calc(100% + 8px)',right:0,
@@ -1881,6 +1873,12 @@ function App(){
         </div>
       </div>
 
+      {isGuest&&(
+        <div style={{background:'#FEF3C7',borderBottom:'1px solid #FCD34D',padding:'6px 16px',fontSize:11,color:'#92400E',display:'flex',alignItems:'center',gap:8,justifyContent:'center'}}>
+          ⚠️ ゲストモード：データはブラウザを閉じると消えます
+          <button onClick={()=>{setIsGuest(false);setData(null);}} style={{background:'#F59E0B',border:'none',borderRadius:6,padding:'2px 8px',fontSize:11,color:'white',cursor:'pointer',fontFamily:'inherit',fontWeight:700}}>ログインして保存</button>
+        </div>
+      )}
       <div className="screen">
         {tab==='today'&&renderDayView(todayStr,null)}
         {tab==='cal'&&(
