@@ -245,6 +245,7 @@
   </style>
 </head>
 <body>
+<style id="hdr-grad-style">.hdr{background:linear-gradient(135deg,#C4B5FD,#F9A8D4)}</style>
 <div id="root"></div>
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -378,6 +379,26 @@ function EmptyIllustStats(){const c='#A78BFA';return(
     <circle cx="54" cy="22" r="2.5" fill={c} opacity="0.5"/>
   </svg>
 );}
+
+// ===== THEMES =====
+const THEMES={
+  lavender:{name:'ラベンダー',primary:'#A78BFA',pl:'#EDE9FE',border:'#EDE9FE',bg:'#FBF8FF',grad:'135deg,#C4B5FD,#F9A8D4',dot:'#C4B5FD'},
+  sky:     {name:'スカイ',    primary:'#38BDF8',pl:'#E0F2FE',border:'#E0F2FE',bg:'#F0FAFF',grad:'135deg,#7DD3FC,#6EE7B7',dot:'#7DD3FC'},
+  mint:    {name:'ミント',    primary:'#34D399',pl:'#D1FAE5',border:'#D1FAE5',bg:'#F0FDF4',grad:'135deg,#6EE7B7,#86EFAC',dot:'#6EE7B7'},
+  sunset:  {name:'サンセット',primary:'#FB923C',pl:'#FFEDD5',border:'#FFE4CC',bg:'#FFFBF7',grad:'135deg,#FCA5A5,#FCD34D',dot:'#FCA5A5'},
+  night:   {name:'ナイト',    primary:'#818CF8',pl:'#EEF2FF',border:'#E0E7FF',bg:'#F5F7FF',grad:'135deg,#818CF8,#A5B4FC',dot:'#A5B4FC'},
+};
+const SK_THEME='sukima_theme';
+function applyTheme(id){
+  const t=THEMES[id]||THEMES.lavender;
+  const r=document.documentElement.style;
+  r.setProperty('--primary',t.primary);
+  r.setProperty('--pl',t.pl);
+  r.setProperty('--border',t.border);
+  r.setProperty('--bg',t.bg);
+  document.getElementById('hdr-grad-style')&&(document.getElementById('hdr-grad-style').textContent=
+    `.hdr{background:linear-gradient(${t.grad})}`);
+}
 
 // ===== CONSTANTS =====
 const SK = 'sukima_v2';
@@ -1520,6 +1541,11 @@ function App(){
   const[addDate,setAddDate]=useState('');
   const[editItem,setEditItem]=useState(null);
   const[pomodoroTask,setPomodoroTask]=useState(undefined); // undefined=closed, null=no task, task obj=preset
+  const[themeId,setThemeId]=useState(()=>localStorage.getItem(SK_THEME)||'lavender');
+  const[showTheme,setShowTheme]=useState(false);
+
+  useEffect(()=>{applyTheme(themeId);},[themeId]);
+  const changeTheme=id=>{setThemeId(id);localStorage.setItem(SK_THEME,id);setShowTheme(false);};
 
   useEffect(()=>{
     const unsub=auth.onAuthStateChanged(async u=>{
@@ -1729,14 +1755,38 @@ function App(){
               }
             </div>
           </div>
-          <div style={{display:'flex',alignItems:'center',gap:8}}>
+          <div style={{display:'flex',alignItems:'center',gap:6,position:'relative'}}>
             <div className="hdr-badge">
               今日の空き {tfh>0?`${tfh}h`:''}{tfm>0?`${tfm}m`:tf===0?'0m':''}
             </div>
+            <button onClick={()=>setShowTheme(v=>!v)} title="テーマ変更" style={{
+              background:'rgba(255,255,255,0.25)',border:'none',borderRadius:8,
+              padding:'5px 7px',cursor:'pointer',color:'white',fontSize:15,lineHeight:1,
+            }}>🎨</button>
             <button onClick={()=>auth.signOut()} title="ログアウト" style={{
               background:'rgba(255,255,255,0.25)',border:'none',borderRadius:8,
               padding:'4px 8px',cursor:'pointer',color:'white',fontSize:11,fontFamily:'inherit',fontWeight:700
-            }}>退出</button>
+            }}>ログアウト</button>
+            {showTheme&&(
+              <div style={{
+                position:'absolute',top:'calc(100% + 8px)',right:0,
+                background:'white',borderRadius:14,padding:'12px 14px',
+                boxShadow:'0 4px 24px rgba(0,0,0,0.13)',zIndex:200,
+                display:'flex',flexDirection:'column',gap:8,minWidth:140,
+              }}>
+                <div style={{fontSize:11,color:'#A09AB8',fontWeight:700,marginBottom:2}}>テーマカラー</div>
+                {Object.entries(THEMES).map(([id,t])=>(
+                  <button key={id} onClick={()=>changeTheme(id)} style={{
+                    display:'flex',alignItems:'center',gap:8,padding:'6px 8px',
+                    background:themeId===id?t.pl:'none',border:themeId===id?`1.5px solid ${t.primary}`:'1.5px solid transparent',
+                    borderRadius:8,cursor:'pointer',fontFamily:'inherit',fontSize:13,color:'var(--text)',fontWeight:themeId===id?700:400,
+                  }}>
+                    <div style={{width:14,height:14,borderRadius:'50%',background:`linear-gradient(${t.grad})`,flexShrink:0}}/>
+                    {t.name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
