@@ -1260,23 +1260,11 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
                 }}>○ 時間を決めない<br/><span style={{fontSize:10,fontWeight:400}}>（コツコツ型）</span></button>
               </div>
               {taskTimeMode==='timed'&&(
-                <div style={{marginTop:8}}>
-                  <div style={{display:'flex',gap:6,marginBottom:8}}>
-                    {[15,30,45].map(m=>(
-                      <button key={m} type="button" onClick={()=>{setMinD(m);setMaxD(m);}} style={{
-                        flex:1,padding:'6px 0',border:'1.5px solid',borderRadius:8,fontSize:12,fontFamily:'inherit',cursor:'pointer',fontWeight:700,
-                        borderColor:(minD===m&&maxD===m)?'var(--primary)':'var(--border)',
-                        background:(minD===m&&maxD===m)?'var(--pl)':'#fff',
-                        color:(minD===m&&maxD===m)?'var(--primary)':'#A09AB8',
-                      }}>{m}分</button>
-                    ))}
-                  </div>
-                  <div className="form-row">
-                    <div className="fg"><label className="fl">最短（分）</label>
-                      <input className="fi fi-sm" type="number" min="1" max="480" value={minD} onChange={e=>setMinD(+e.target.value)}/></div>
-                    <div className="fg"><label className="fl">最長（分）</label>
-                      <input className="fi fi-sm" type="number" min="1" max="480" value={maxD} onChange={e=>setMaxD(+e.target.value)}/></div>
-                  </div>
+                <div className="form-row" style={{marginTop:8}}>
+                  <div className="fg"><label className="fl">最短（分）</label>
+                    <input className="fi fi-sm" type="number" min="1" max="480" value={minD} onChange={e=>setMinD(+e.target.value)}/></div>
+                  <div className="fg"><label className="fl">最長（分）</label>
+                    <input className="fi fi-sm" type="number" min="1" max="480" value={maxD} onChange={e=>setMaxD(+e.target.value)}/></div>
                 </div>
               )}
             </div>
