@@ -1068,14 +1068,19 @@ function TasksScreen({tasks,onDel,onEdit,completions,onToggle,onPomodoro,onLog})
       {qlogTask&&(
         <div className="qlog-row">
           <span style={{fontSize:12,fontWeight:700,color:'var(--primary)',flex:1,minWidth:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{qlogTask.name}</span>
-          <input className="qlog-input" type="number" min="1" max="300" placeholder="分" value={qlogMin} onChange={e=>setQlogMin(e.target.value)} autoFocus onKeyDown={e=>{if(e.key==='Enter')saveQlog();if(e.key==='Escape'){setQlogTask(null);setQlogMin('');}}}/>
+          <input className="qlog-input" type="text" inputMode="numeric" pattern="[0-9]*" placeholder="分" value={qlogMin} onChange={e=>setQlogMin(e.target.value.replace(/[^0-9]/g,''))} autoFocus onKeyDown={e=>{if(e.key==='Enter')saveQlog();if(e.key==='Escape'){setQlogTask(null);setQlogMin('');}}}/>
           <span style={{fontSize:11,color:'#A09AB8'}}>分やった</span>
           <button className="qlog-save" onClick={saveQlog}>記録</button>
           <button className="qlog-cancel" onClick={()=>{setQlogTask(null);setQlogMin('');}}>✕</button>
         </div>
       )}
       <div className="list">
-        {tasks.map(t=>{
+        {[...tasks].sort((a,b)=>{
+          if(a.deadline&&b.deadline)return a.deadline.localeCompare(b.deadline);
+          if(a.deadline)return -1;
+          if(b.deadline)return 1;
+          return 0;
+        }).map(t=>{
           const done=doneIds.includes(t.id);
           const dl=dlDays(t.deadline);
           const soon=dl!==null&&dl<=3;
