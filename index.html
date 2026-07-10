@@ -532,7 +532,7 @@ function suggestFor(slot,tasks){
   const pm={morning:[360,720],afternoon:[720,1080],evening:[1080,1440],anytime:[360,1440]};
   const po={high:0,medium:1,low:2};
   return tasks
-    .filter(t=>t.minDur<=slot.dur)
+    .filter(t=>t.timeMode==='open'?slot.dur>=10:t.minDur<=slot.dur)
     .filter(t=>{const[a,b]=pm[t.pref]||[360,1440];return slot.start<b&&slot.end>a;})
     .sort((a,b)=>po[a.priority]-po[b.priority])
     .slice(0,4);
@@ -646,7 +646,7 @@ function PomodoroModal({onClose,onSave,tasks,dateStr,preTask}){
               transform="rotate(-90 65 65)" style={{transition:'stroke-dashoffset .5s'}}/>
           </svg>
           <div className="pomo-time">{fmtSec(elapsed)}</div>
-          <div className="pomo-sub">{phase==='running'?'集中中…':phase==='paused'?'一時停止中':phase==='break'?'休憩中':'準備OK'}</div>
+          <div className="pomo-sub">{phase==='running'?'集中':phase==='paused'?'一時停止':phase==='break'?'休憩':'準備OK'}</div>
         </div>
         {phase==='break'&&(
           <div className="pomo-break-row">
@@ -900,7 +900,7 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
                   <span style={{width:8,height:8,borderRadius:'50%',background:PC[t.priority]||'#E0E0E0',flexShrink:0,display:'inline-block'}}/>
                   <span style={{fontWeight:700,color:'#374151'}}>{t.name}</span>
                 </span>
-                <span className="rec-dur">{t.minDur}〜{t.maxDur}分</span>
+                <span className="rec-dur">{t.timeMode==='open'?'コツコツ型':`${t.minDur}〜${t.maxDur}分`}</span>
               </button>
             ))}
           </div>
@@ -1090,7 +1090,7 @@ function TasksScreen({tasks,onDel,onEdit,completions,onToggle,onPomodoro,onLog})
               <div className="cdot" style={{background:CAT[t.category]||'#BDBDBD'}}/>
               <div style={{flex:1,minWidth:0}}>
                 <div className="tname" style={done?{textDecoration:'line-through',opacity:.6}:{}}>{t.name}</div>
-                <div className="tmeta"><IcoTimerSvg c="var(--primary-mid)" s={11}/> {fmtDur(t.minDur,t.maxDur)} · {FL[t.freq]} · {TL[t.pref]}</div>
+                <div className="tmeta"><IcoTimerSvg c="var(--primary-mid)" s={11}/> {t.timeMode==='open'?'コツコツ型':fmtDur(t.minDur,t.maxDur)} · {FL[t.freq]} · {TL[t.pref]}</div>
                 {t.deadline&&<span className={`deadline-badge${soon?' soon':''}`}><IcoClock s={9}/>{dl===0?'今日まで':dl<0?`${-dl}日超過`:`あと${dl}日`}</span>}
               </div>
               <span className="pbadge" style={{background:PC[t.priority]+'20',color:PC[t.priority],display:'flex',alignItems:'center',gap:3}}>{PI[t.priority]}{PL[t.priority]}</span>
@@ -1156,7 +1156,8 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
 
   // Task
   const[name,setName]=useState(isEdit&&mode==='task'?editItem.name:'');
-  const[minD,setMinD]=useState(isEdit&&mode==='task'?editItem.minDur:20);
+  const[taskTimeMode,setTaskTimeMode]=useState(isEdit&&mode==='task'?(editItem.timeMode||'timed'):'timed');
+  const[minD,setMinD]=useState(isEdit&&mode==='task'?editItem.minDur:30);
   const[maxD,setMaxD]=useState(isEdit&&mode==='task'?editItem.maxDur:30);
   const[pri,setPri]=useState(isEdit&&mode==='task'?editItem.priority:'medium');
   const[freq,setFreq]=useState(isEdit&&mode==='task'?editItem.freq:'daily');
@@ -1197,7 +1198,7 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
   const submit=()=>{
     if(mode==='task'){
       if(!name.trim())return;
-      const payload={type:'task',name:name.trim(),minDur:minD,maxDur:maxD,priority:pri,freq,pref,category:cat,deadline:deadline||null};
+      const payload={type:'task',name:name.trim(),timeMode:taskTimeMode,minDur:taskTimeMode==='open'?0:minD,maxDur:taskTimeMode==='open'?0:maxD,priority:pri,freq,pref,category:cat,deadline:deadline||null};
       isEdit?onUpdate({...payload,id:editItem.id}):onAdd(payload);
     }else if(mode==='fixed'){
       if(!fname.trim())return;
@@ -1242,11 +1243,42 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
               <input className="fi" placeholder="例：英語の勉強、メイク、お風呂…" value={name} onChange={onNameCh}/>
               {sug&&<div className="hint" style={{display:'flex',alignItems:'center',gap:5}}><IcoLamp s={14}/><span><strong>{sug.min}〜{sug.max}分</strong> くらいかな？ カテゴリ: {sug.cat}</span></div>}
             </div>
-            <div className="form-row">
-              <div className="fg"><label className="fl">最短（分）</label>
-                <input className="fi fi-sm" type="number" min="1" max="480" value={minD} onChange={e=>setMinD(+e.target.value)}/></div>
-              <div className="fg"><label className="fl">最長（分）</label>
-                <input className="fi fi-sm" type="number" min="1" max="480" value={maxD} onChange={e=>setMaxD(+e.target.value)}/></div>
+            <div className="fg">
+              <label className="fl">かかる時間</label>
+              <div style={{display:'flex',gap:8,marginTop:4}}>
+                <button type="button" onClick={()=>setTaskTimeMode('timed')} style={{
+                  flex:1,padding:'8px 4px',border:'1.5px solid',borderRadius:10,fontSize:12,fontFamily:'inherit',cursor:'pointer',fontWeight:700,
+                  borderColor:taskTimeMode==='timed'?'var(--primary)':'var(--border)',
+                  background:taskTimeMode==='timed'?'var(--pl)':'#fff',
+                  color:taskTimeMode==='timed'?'var(--primary)':'#A09AB8',
+                }}>◉ 時間指定タスク</button>
+                <button type="button" onClick={()=>setTaskTimeMode('open')} style={{
+                  flex:1,padding:'8px 4px',border:'1.5px solid',borderRadius:10,fontSize:12,fontFamily:'inherit',cursor:'pointer',fontWeight:700,
+                  borderColor:taskTimeMode==='open'?'var(--primary)':'var(--border)',
+                  background:taskTimeMode==='open'?'var(--pl)':'#fff',
+                  color:taskTimeMode==='open'?'var(--primary)':'#A09AB8',
+                }}>○ 時間を決めない<br/><span style={{fontSize:10,fontWeight:400}}>（コツコツ型）</span></button>
+              </div>
+              {taskTimeMode==='timed'&&(
+                <div style={{marginTop:8}}>
+                  <div style={{display:'flex',gap:6,marginBottom:8}}>
+                    {[15,30,45].map(m=>(
+                      <button key={m} type="button" onClick={()=>{setMinD(m);setMaxD(m);}} style={{
+                        flex:1,padding:'6px 0',border:'1.5px solid',borderRadius:8,fontSize:12,fontFamily:'inherit',cursor:'pointer',fontWeight:700,
+                        borderColor:(minD===m&&maxD===m)?'var(--primary)':'var(--border)',
+                        background:(minD===m&&maxD===m)?'var(--pl)':'#fff',
+                        color:(minD===m&&maxD===m)?'var(--primary)':'#A09AB8',
+                      }}>{m}分</button>
+                    ))}
+                  </div>
+                  <div className="form-row">
+                    <div className="fg"><label className="fl">最短（分）</label>
+                      <input className="fi fi-sm" type="number" min="1" max="480" value={minD} onChange={e=>setMinD(+e.target.value)}/></div>
+                    <div className="fg"><label className="fl">最長（分）</label>
+                      <input className="fi fi-sm" type="number" min="1" max="480" value={maxD} onChange={e=>setMaxD(+e.target.value)}/></div>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="fg"><label className="fl">優先度</label><div className="chips">
               {[['high',<><IcoPrioHigh s={12}/>高</>],['medium',<><IcoPrioMed s={12}/>中</>],['low',<><IcoPrioLow s={12}/>低</>]].map(([v,l])=>(
