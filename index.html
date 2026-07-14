@@ -816,7 +816,7 @@ function MonthCalendar({events,onSelectDate,selectedDate}){
               {evs.slice(0,2).map((e,j)=>{
                 const c=CAT[e.category]||'#BDBDBD';
                 return(
-                  <div key={j} className="cal-ev" style={{background:c+'25',color:c}}>
+                  <div key={j} className="cal-ev" style={{background:c+'25',color:darken(c,60)}}>
                     {e.name}
                   </div>
                 );
