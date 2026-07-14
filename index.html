@@ -816,7 +816,7 @@ function MonthCalendar({events,onSelectDate,selectedDate}){
               {evs.slice(0,2).map((e,j)=>{
                 const c=CAT[e.category]||'#BDBDBD';
                 return(
-                  <div key={j} className="cal-ev" style={{background:c+'25',color:darken(c,50)}}>
+                  <div key={j} className="cal-ev" style={{background:c+'25',color:darken(c,40)}}>
                     {e.name}
                   </div>
                 );
@@ -968,10 +968,10 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
               return(
                 <div key={b.id} className="block" style={{top:t2px(s),height:Math.max(ht,20),background:c+'22',border:`2px solid ${c}`,borderLeft:`4px solid ${c}`}}>
                   <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
-                    <div className="block-name" style={{color:darken(c,50)}}>{b.name}</div>
+                    <div className="block-name" style={{color:darken(c,40)}}>{b.name}</div>
                     {ht>=24&&<button className="skip-btn" onClick={()=>onToggleSkip(dateStr,b.id)} title="この日はスキップ">✕</button>}
                   </div>
-                  {ht>=32&&<div className="block-time" style={{color:darken(c,50)}}>{fmt(b.startTime)}〜{fmt(b.endTime)}</div>}
+                  {ht>=32&&<div className="block-time" style={{color:darken(c,40)}}>{fmt(b.startTime)}〜{fmt(b.endTime)}</div>}
                 </div>
               );
             })}
@@ -988,10 +988,10 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
               return(
                 <div key={b.id} className="flex-block" style={{top:t2px(s),height:Math.max(ht,22),background:c+'18',borderColor:c}}>
                   <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
-                    <div className="flex-block-name" style={{color:darken(c,50)}}>{b.name}</div>
+                    <div className="flex-block-name" style={{color:darken(c,40)}}>{b.name}</div>
                     <button className="skip-btn" onClick={()=>onToggleSkip(dateStr,b.id)} title="この日はスキップ" style={{fontSize:9,padding:'1px 3px'}}>✕</button>
                   </div>
-                  {ht>=36&&<div className="flex-block-dur" style={{color:darken(c,50)}}>〜{b.duration}分</div>}
+                  {ht>=36&&<div className="flex-block-dur" style={{color:darken(c,40)}}>〜{b.duration}分</div>}
                 </div>
               );
             })}
@@ -1009,13 +1009,13 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
                 borderStyle:'solid',borderLeftWidth:'4px',
               }}>
                 <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
-                  <div className="block-name" style={{color:darken(c,50),display:'flex',alignItems:'center',gap:3}}><IcoPin c={c} s={11}/>{e.name}</div>
+                  <div className="block-name" style={{color:darken(c,40),display:'flex',alignItems:'center',gap:3}}><IcoPin c={c} s={11}/>{e.name}</div>
                   <button onClick={()=>onDelEvent(e.id)} style={{
                     background:'none',border:'none',color:'#9090A8',opacity:.9,cursor:'pointer',
                     fontSize:'13px',lineHeight:1,padding:'0 0 0 4px',flexShrink:0
                   }}>×</button>
                 </div>
-                {ht>=32&&<div className="block-time" style={{color:darken(c,50)}}>{fmt(e.startTime)}〜{fmt(e.endTime)}</div>}
+                {ht>=32&&<div className="block-time" style={{color:darken(c,40)}}>{fmt(e.startTime)}〜{fmt(e.endTime)}</div>}
               </div>
             );
           })}
