@@ -44,17 +44,17 @@
     .cal-dow-cell:first-child{color:#F87171}
     .cal-dow-cell:last-child{color:#60A5FA}
     .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-    .cal-cell{min-height:58px;display:flex;flex-direction:column;align-items:stretch;padding:4px 2px 3px;border-radius:10px;cursor:pointer;position:relative;transition:background .12s}
+    .cal-cell{height:62px;display:flex;flex-direction:column;align-items:stretch;padding:4px 2px 3px;border-radius:10px;cursor:pointer;position:relative;transition:background .12s;overflow:hidden}
     .cal-cell:active{background:var(--pl)}
     .cal-cell.other{opacity:.3}
     .cal-cell.today .cal-num{background:var(--primary);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin:0 auto}
     .cal-cell.selected{background:var(--pl)}
     .cal-cell.selected .cal-num{color:var(--primary);font-weight:900}
-    .cal-num{font-size:12px;font-weight:500;line-height:1;text-align:center;margin-bottom:3px}
+    .cal-num{font-size:12px;font-weight:500;line-height:1;text-align:center;margin-bottom:3px;flex-shrink:0}
     .cal-num.sun{color:#F87171}
     .cal-num.sat{color:#60A5FA}
-    .cal-ev{font-size:9px;font-weight:700;border-radius:3px;padding:1px 3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
-    .cal-more{font-size:8px;color:var(--muted);text-align:center}
+    .cal-ev{font-size:9px;font-weight:700;border-radius:3px;padding:1px 3px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4;flex-shrink:0}
+    .cal-more{font-size:8px;color:var(--muted);text-align:center;flex-shrink:0}
 
     /* ── DAY VIEW ── */
     .day-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
