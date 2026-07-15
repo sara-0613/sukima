@@ -106,6 +106,21 @@
     .qlog-save{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-family:inherit;font-weight:700;cursor:pointer}
     .qlog-cancel{background:none;border:none;color:#A09AB8;font-size:12px;font-family:inherit;cursor:pointer}
 
+    .condition-bar{display:flex;align-items:center;gap:6px;margin-bottom:12px;padding:8px 12px;background:var(--pale);border-radius:var(--rs)}
+    .cond-label{font-size:11px;color:#A09AB8;font-weight:600;margin-right:4px;flex-shrink:0}
+    .cond-btn{border:1.5px solid var(--border);background:#fff;border-radius:100px;padding:4px 12px;font-size:11px;font-family:inherit;cursor:pointer;font-weight:600;color:#A09AB8;transition:all .15s}
+    .cond-btn.on{background:var(--primary);border-color:var(--primary);color:#fff}
+    .rec-reasons{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+    .rec-reason-tag{font-size:9px;background:var(--pl);color:var(--primary);border-radius:100px;padding:2px 7px;font-weight:700}
+    .rec-actions{display:flex;gap:6px;margin-top:8px}
+    .rec-act-main{flex:1;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:8px;font-size:12px;font-family:inherit;font-weight:700;cursor:pointer}
+    .rec-act-sub{background:#fff;color:#A09AB8;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:11px;font-family:inherit;cursor:pointer}
+    .next-slot-banner{background:linear-gradient(135deg,var(--primary),var(--primary-mid));border-radius:var(--rs);padding:12px 16px;margin-bottom:12px;color:#fff}
+    .nsb-title{font-size:11px;opacity:.85;font-weight:600;margin-bottom:2px}
+    .nsb-time{font-size:22px;font-weight:900;line-height:1.1}
+    .nsb-sub{font-size:11px;opacity:.8;margin-top:2px}
+    .flex-done{position:absolute;bottom:2px;right:3px;font-size:8px;color:#6B6B80;font-weight:700}
+    .flex-complete-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:2px 5px;font-size:8px;font-family:inherit;cursor:pointer;color:#A09AB8;flex-shrink:0}
     /* Countdown banner */
     .countdown-card{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:var(--rs);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
     .cd-days{font-size:26px;font-weight:900;color:#92400E;line-height:1}
@@ -478,6 +493,37 @@ const DICT={
 const getSug=name=>{for(const[k,v]of Object.entries(DICT)){if(name.includes(k))return v;}return null;};
 
 // ===== STORAGE =====
+
+function guestDefaults(){
+  // Time-relative sample data so the app value is immediately visible
+  const now=new Date();
+  const cur=now.getHours()*60+now.getMinutes();
+  const ds=today();
+  // place events ~40min and ~3h from now
+  const round30=m=>Math.ceil(m/30)*30;
+  const ev1Start=Math.min(round30(cur+40),TE-90);
+  const ev2Start=Math.min(round30(cur+180),TE-90);
+  return{
+    fixedBlocks:[
+      {id:1,name:'朝の準備',timeMode:'range',windowStart:360,windowEnd:540,duration:45,category:'準備',days:ALL_DAYS},
+      {id:2,name:'朝食',    timeMode:'range',windowStart:390,windowEnd:540,duration:20,category:'食事',days:ALL_DAYS},
+      {id:3,name:'夕食',    timeMode:'range',windowStart:1050,windowEnd:1200,duration:40,category:'食事',days:ALL_DAYS},
+      {id:4,name:'お風呂',  timeMode:'range',windowStart:1140,windowEnd:1320,duration:30,category:'生活',days:ALL_DAYS},
+    ],
+    tasks:[
+      {id:1,name:'メール返信',timeMode:'timed',minDur:5,maxDur:10,priority:'high',freq:'daily',pref:'anytime',category:'その他',intensity:'light'},
+      {id:2,name:'英単語',    timeMode:'timed',minDur:10,maxDur:15,priority:'medium',freq:'daily',pref:'anytime',category:'勉強',intensity:'light'},
+      {id:3,name:'レポート',  timeMode:'timed',minDur:30,maxDur:60,priority:'high',freq:'once',pref:'afternoon',category:'勉強',intensity:'focus',
+        deadline:new Date(new Date().setDate(new Date().getDate()+1)).toISOString().slice(0,10)},
+    ],
+    events:[
+      {id:10,name:'授業',    date:ds,startTime:ev1Start,endTime:ev1Start+90,category:'勉強'},
+      {id:11,name:'アルバイト',date:ds,startTime:ev2Start,endTime:ev2Start+90,category:'バイト'},
+    ],
+    completions:{},logs:[],skips:{},blockCompletions:{},nextId:20,
+  };
+}
+
 function defaults(){
   return {
     fixedBlocks:[
@@ -503,6 +549,7 @@ function defaults(){
     completions:{},
     logs:[],
     skips:{},
+    blockCompletions:{},
     nextId:20,
   };
 }
@@ -511,6 +558,7 @@ function migrate(d){
   if(!d.completions)d.completions={};
   if(!d.logs)d.logs=[];
   if(!d.skips)d.skips={};
+  if(!d.blockCompletions)d.blockCompletions={};
   return d;
 }
 function loadLocal(){
@@ -535,14 +583,26 @@ function getFreeSlots(allBlocks){
   if(cur<TE)slots.push({start:cur,end:TE,dur:TE-cur});
   return slots.filter(s=>s.dur>=10);
 }
-function suggestFor(slot,tasks){
+function suggestFor(slot,tasks,condition='normal'){
   const pm={morning:[360,720],afternoon:[720,1080],evening:[1080,1440],anytime:[360,1440]};
   const po={high:0,medium:1,low:2};
+  const intensityOk=t=>{
+    const iv=t.intensity||'any';
+    if(condition==='tired')return iv==='light'||iv==='mobile'||iv==='any';
+    return true;
+  };
   return tasks
     .filter(t=>t.timeMode==='open'?slot.dur>=10:t.minDur<=slot.dur)
     .filter(t=>{const[a,b]=pm[t.pref]||[360,1440];return slot.start<b&&slot.end>a;})
-    .sort((a,b)=>po[a.priority]-po[b.priority])
-    .slice(0,4);
+    .filter(intensityOk)
+    .sort((a,b)=>{
+      if(condition==='energetic'){
+        const af=a.intensity==='focus',bf=b.intensity==='focus';
+        if(af&&!bf)return -1;if(bf&&!af)return 1;
+      }
+      return po[a.priority]-po[b.priority];
+    })
+    .slice(0,6);
 }
 
 // ===== MONTH CALENDAR =====
@@ -831,12 +891,15 @@ function MonthCalendar({events,onSelectDate,selectedDate}){
 }
 
 // ===== DAY VIEW =====
-function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips,onToggleSkip}){
+function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips,onToggleSkip,onCompleteBlock,condition='normal'}){
   const d=new Date(dateStr+'T00:00:00');
   const dow=d.getDay();
   const isToday=dateStr===today();
   const label=`${d.getMonth()+1}月${d.getDate()}日（${DOW[dow]}）`;
   const daySkips=skips[dateStr]||[];
+  const blockComps=(data.blockCompletions||{})[dateStr]||{};
+  const[recIdx,setRecIdx]=React.useState(0);
+  const[recDismissed,setRecDismissed]=React.useState(false);
 
   // Blocks for this day (apply skips + date range)
   const dayFixed=data.fixedBlocks.filter(b=>{
@@ -848,7 +911,7 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
   });
   const dayFixedAll=data.fixedBlocks.filter(b=>(b.days||ALL_DAYS).includes(dow));
   const dayEvents=data.events.filter(e=>e.date===dateStr);
-  const normFixed=b=>b.timeMode==='range'?{...b,startTime:b.windowStart,endTime:b.windowStart+b.duration}:b;
+  const normFixed=b=>b.timeMode==='range'?{...b,startTime:b.windowStart,endTime:blockComps[b.id]??b.windowStart+b.duration}:b;
   const allBlocks=[
     ...dayFixed.map(b=>({...normFixed(b),isFixed:true})),
     ...dayEvents.map(e=>({...e,isEvent:true})),
@@ -886,30 +949,68 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
         </div>
       </div>
 
-      {/* Recommendation card */}
+      {/* Condition bar */}
+      <div className="condition-bar">
+        <span className="cond-label">今の状態</span>
+        {[['energetic','元気'],['normal','普通'],['tired','疲れている']].map(([v,l])=>(
+          <button key={v} className={`cond-btn${condition===v?' on':''}`} onClick={()=>onConditionChange&&onConditionChange(v)}>{l}</button>
+        ))}
+      </div>
+
+      {/* Next-slot banner */}
       {(()=>{
+        const nextFixed=[...dayFixed,...dayEvents].map(b=>b.startTime??b.windowStart).filter(t=>t>nowMin).sort((a,b)=>a-b);
+        const nextAt=nextFixed[0];
+        if(!isToday||nextAt==null)return null;
+        const gap=nextAt-nowMin;
+        if(gap>120)return null;
+        return(
+          <div className="next-slot-banner">
+            <div className="nsb-title">次の予定まで</div>
+            <div className="nsb-time">{gap}分</div>
+            <div className="nsb-sub">{fmt(nextAt)}〜 {([...dayFixed,...dayEvents].find(b=>(b.startTime??b.windowStart)===nextAt)||{}).name||''}</div>
+          </div>
+        );
+      })()}
+
+      {/* Recommendation card */}
+      {!recDismissed&&(()=>{
         const PC={high:'#F9A8D4',medium:'#FDE68A',low:'#86EFAC'};
         const allSlots=slots.filter(s=>s.dur>=20);
         if(!allSlots.length||!data.tasks.length)return null;
         const bigSlot=allSlots.reduce((a,b)=>b.dur>a.dur?b:a,allSlots[0]);
-        const recs=suggestFor(bigSlot,data.tasks).slice(0,3);
+        const recs=suggestFor(bigSlot,data.tasks,condition);
         if(!recs.length)return null;
+        const idx=recIdx%recs.length;
+        const t=recs[idx];
+        const reasons=[];
+        if(t.timeMode!=='open'&&t.maxDur<=bigSlot.dur)reasons.push(`${t.maxDur}分で終わる`);
+        if(t.deadline){const days=Math.round((new Date(t.deadline+'T00:00:00')-new Date())/86400000);if(days<=3)reasons.push(days===0?'今日が期限':days<0?`${-days}日超過`:`あと${days}日`);}
+        if(t.priority==='high')reasons.push('優先度が高い');
+        if(t.intensity==='light')reasons.push('気軽にできる');
+        if(t.timeMode==='open')reasons.push('コツコツ型');
         return(
           <div className="rec-card">
             <div className="rec-title">
               <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1L9.8 5.5H14.5L10.6 8.4L12 13L8 10.2L4 13L5.4 8.4L1.5 5.5H6.2L8 1Z" fill="var(--primary)" opacity="0.85"/></svg>
-              このスキマ時間に試してみませんか？
+              このスキマ時間に
               <span style={{marginLeft:'auto',fontSize:10,color:'#A09AB8',fontWeight:600}}>{fmt(bigSlot.start)}〜{fmt(bigSlot.end)}（{bigSlot.dur}分）</span>
             </div>
-            {recs.map(t=>(
-              <button key={t.id} className="rec-item" onClick={()=>onOpenPomodoro(t)}>
-                <span style={{display:'flex',alignItems:'center',gap:6}}>
-                  <span style={{width:8,height:8,borderRadius:'50%',background:PC[t.priority]||'#E0E0E0',flexShrink:0,display:'inline-block'}}/>
-                  <span style={{fontWeight:700,color:'#374151'}}>{t.name}</span>
-                </span>
-                <span className="rec-dur">{t.timeMode==='open'?'コツコツ型':`${t.minDur}〜${t.maxDur}分`}</span>
-              </button>
-            ))}
+            <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
+              <span style={{width:9,height:9,borderRadius:'50%',background:PC[t.priority]||'#E0E0E0',flexShrink:0,display:'inline-block'}}/>
+              <span style={{fontWeight:800,fontSize:14,color:'#2D2D3A'}}>{t.name}</span>
+              <span className="rec-dur" style={{marginLeft:'auto'}}>{t.timeMode==='open'?'コツコツ型':`${t.minDur}〜${t.maxDur}分`}</span>
+            </div>
+            {reasons.length>0&&(
+              <div className="rec-reasons">
+                {reasons.map((r,i)=><span key={i} className="rec-reason-tag">{r}</span>)}
+              </div>
+            )}
+            <div className="rec-actions">
+              <button className="rec-act-main" onClick={()=>onOpenPomodoro(t)}>このタスクをやる</button>
+              {recs.length>1&&<button className="rec-act-sub" onClick={()=>setRecIdx(p=>p+1)}>別の候補</button>}
+              <button className="rec-act-sub" onClick={()=>setRecDismissed(true)}>今は休む</button>
+            </div>
           </div>
         );
       })()}
@@ -983,15 +1084,23 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
             {dayFixed.filter(b=>b.timeMode==='range').map(b=>{
               const c=CAT[b.category]||'#BDBDBD';
               if(b.windowEnd<=TS||b.windowStart>=TE)return null;
-              const s=Math.max(b.windowStart,TS),e=Math.min(b.windowEnd,TE);
+              const completedAt=blockComps[b.id];
+              const s=Math.max(b.windowStart,TS);
+              const e=completedAt?Math.min(completedAt,TE):Math.min(b.windowEnd,TE);
               const ht=((e-s)/60)*PH;
               return(
-                <div key={b.id} className="flex-block" style={{top:t2px(s),height:Math.max(ht,22),background:c+'18',borderColor:c}}>
-                  <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between'}}>
-                    <div className="flex-block-name" style={{color:darken(c,30)}}>{b.name}</div>
-                    <button className="skip-btn" onClick={()=>onToggleSkip(dateStr,b.id)} title="この日はスキップ" style={{fontSize:9,padding:'1px 3px'}}>✕</button>
+                <div key={b.id} className="flex-block" style={{top:t2px(s),height:Math.max(ht,22),background:completedAt?c+'10':c+'18',borderColor:c,opacity:completedAt?.8:1}}>
+                  <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:2}}>
+                    <div className="flex-block-name" style={{color:darken(c,30),textDecoration:completedAt?'line-through':''}}>{b.name}</div>
+                    {!completedAt&&<button className="skip-btn" onClick={()=>onToggleSkip(dateStr,b.id)} title="この日はスキップ" style={{fontSize:9,padding:'1px 3px'}}>✕</button>}
                   </div>
-                  {ht>=36&&<div className="flex-block-dur" style={{color:darken(c,30)}}>〜{b.duration}分</div>}
+                  {completedAt
+                    ?<div className="flex-done">✓ {fmt(completedAt)}</div>
+                    :<>
+                      {ht>=36&&<div className="flex-block-dur" style={{color:darken(c,30)}}>〜{b.duration}分</div>}
+                      {ht>=36&&isToday&&onCompleteBlock&&<button className="flex-complete-btn" onClick={()=>onCompleteBlock(dateStr,b.id,nowMin)}>完了</button>}
+                    </>
+                  }
                 </div>
               );
             })}
@@ -1168,6 +1277,7 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
   const[minD,setMinD]=useState(isEdit&&mode==='task'?editItem.minDur:30);
   const[maxD,setMaxD]=useState(isEdit&&mode==='task'?editItem.maxDur:30);
   const[pri,setPri]=useState(isEdit&&mode==='task'?editItem.priority:'medium');
+  const[intensity,setIntensity]=useState(isEdit&&mode==='task'?(editItem.intensity||'any'):'any');
   const[freq,setFreq]=useState(isEdit&&mode==='task'?editItem.freq:'daily');
   const[pref,setPref]=useState(isEdit&&mode==='task'?editItem.pref:'anytime');
   const[cat,setCat]=useState(isEdit&&mode==='task'?editItem.category:'その他');
@@ -1206,7 +1316,7 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
   const submit=()=>{
     if(mode==='task'){
       if(!name.trim())return;
-      const payload={type:'task',name:name.trim(),timeMode:taskTimeMode,minDur:taskTimeMode==='open'?0:minD,maxDur:taskTimeMode==='open'?0:maxD,priority:pri,freq,pref,category:cat,deadline:deadline||null};
+      const payload={type:'task',name:name.trim(),timeMode:taskTimeMode,minDur:taskTimeMode==='open'?0:minD,maxDur:taskTimeMode==='open'?0:maxD,priority:pri,freq,pref,category:cat,deadline:deadline||null,intensity};
       isEdit?onUpdate({...payload,id:editItem.id}):onAdd(payload);
     }else if(mode==='fixed'){
       if(!fname.trim())return;
@@ -1279,6 +1389,9 @@ function AddModal({onClose,onAdd,onUpdate,defaultMode='task',defaultDate='',edit
             <div className="fg"><label className="fl">優先度</label><div className="chips">
               {[['high',<><IcoPrioHigh s={12}/>高</>],['medium',<><IcoPrioMed s={12}/>中</>],['low',<><IcoPrioLow s={12}/>低</>]].map(([v,l])=>(
                 <Chip key={v} v={v} cur={pri} set={setPri} label={l}/>))}</div></div>
+            <div className="fg"><label className="fl">集中力</label><div className="chips">
+              {[['any','なんでも'],['light','気軽に'],['focus','集中'],['mobile','外出中でも']].map(([v,l])=>(
+                <Chip key={v} v={v} cur={intensity} set={setIntensity} label={l}/>))}</div></div>
             <div className="fg"><label className="fl">頻度</label><div className="chips">
               {[['daily','毎日'],['weekly','週1〜'],['once','1回だけ']].map(([v,l])=>(
                 <Chip key={v} v={v} cur={freq} set={setFreq} label={l}/>))}</div></div>
@@ -1747,6 +1860,7 @@ function App(){
   const[isGuest,setIsGuest]=useState(false);
   const[data,setData]=useState(null);
   const[tab,setTab]=useState('today');
+  const[condition,setCondition]=useState('normal');
   const[selDate,setSelDate]=useState(null);
   const[calMode,setCalMode]=useState('month'); // 'month'|'week'
   const[showAdd,setShowAdd]=useState(false);
@@ -1826,6 +1940,14 @@ function App(){
   const delFixed =id=>mutate(p=>({...p,fixedBlocks:p.fixedBlocks.filter(b=>b.id!==id)}));
   const delEvent =id=>mutate(p=>({...p,events:p.events.filter(e=>e.id!==id)}));
 
+  const completeBlock=(dateStr,blockId,atMin)=>{
+    mutate(prev=>{
+      const bc={...(prev.blockCompletions||{})};
+      bc[dateStr]={...(bc[dateStr]||{}),[blockId]:atMin};
+      return{...prev,blockCompletions:bc};
+    });
+  };
+
   const toggleSkip=(dateStr,blockId)=>{
     mutate(prev=>{
       const skips={...prev.skips||{}};
@@ -1874,7 +1996,7 @@ function App(){
       <div style={{color:'#A09AB8',fontSize:13}}>読み込み中…</div>
     </div>);
   }
-  if(!user&&!isGuest)return <LoginScreen onGuest={()=>{setIsGuest(true);setData(defaults());}}/>;
+  if(!user&&!isGuest)return <LoginScreen onGuest={()=>{setIsGuest(true);setData(guestDefaults());}}/>;
   if(isGuest&&data===null)return <LoginScreen onGuest={()=>{setIsGuest(true);setData(defaults());}}/>;
 
   // Header info
@@ -1945,6 +2067,9 @@ function App(){
       onDelEvent={delEvent}
       skips={skips}
       onToggleSkip={toggleSkip}
+      onCompleteBlock={completeBlock}
+      condition={condition}
+      onConditionChange={setCondition}
     />
   );
 
