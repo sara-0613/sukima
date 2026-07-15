@@ -8,10 +8,10 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     :root{
-      --primary:#8B7CF6;--primary-mid:#BAB0F8;--pl:#EEEBFF;--pale:#F6F4FF;
-      --bg:#FDFCFF;--card:#FFFFFF;--text:#3D3660;--muted:#9E98BE;--border:#E6E2FF;
-      --grad:linear-gradient(145deg,#A78BFA,#C084FC);
-      --shadow:0 2px 20px rgba(139,124,246,.10);--r:20px;--rs:14px;
+      --primary:#8E86F5;--primary-mid:#DCD6FF;--pl:#DCD6FF;--pale:#F6F8FC;
+      --bg:#FFFFFF;--card:#F6F8FC;--text:#3B3B4F;--muted:#8A8A9E;--border:#EEF0F8;
+      --grad:linear-gradient(135deg,#8E86F5,#B8B3FF);
+      --shadow:0 2px 16px rgba(142,134,245,0.08);--r:20px;--rs:12px;
     }
     html,body,#root{height:100%;overflow-x:hidden}
     body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);font-size:14px;transition:background .3s}
@@ -25,7 +25,7 @@
     .hdr-badge{background:rgba(255,255,255,.25);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700;backdrop-filter:blur(8px)}
 
     /* Nav */
-    .bnav{background:color-mix(in srgb,var(--card) 92%,transparent);border-top:1px solid var(--border);display:flex;position:sticky;bottom:0;z-index:100;padding-bottom:env(safe-area-inset-bottom,0);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+    .bnav{background:#FFFFFF;border-top:1px solid var(--border);display:flex;position:sticky;bottom:0;z-index:100;padding-bottom:env(safe-area-inset-bottom,0);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
     .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px 11px;border:none;background:none;cursor:pointer;font-size:10px;font-family:inherit;color:var(--muted);transition:color .15s;position:relative}
     .ni.on{color:var(--primary)}
     .ni.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:2.5px;background:var(--primary);border-radius:2px}
@@ -116,14 +116,14 @@
     .rec-reasons{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
     .rec-reason-tag{font-size:9px;background:var(--pl);color:var(--primary);border-radius:6px;padding:2px 8px;font-weight:700;letter-spacing:.02em}
     .rec-actions{display:flex;gap:6px;margin-top:8px}
-    .rec-act-main{flex:1;background:var(--primary);color:#fff;border:none;border-radius:var(--rs);padding:10px;font-size:12px;font-family:inherit;font-weight:700;cursor:pointer;transition:opacity .15s}
+    .rec-act-main{flex:1;background:#8E86F5;color:#fff;border:none;border-radius:999px;padding:12px 24px;font-size:12px;font-family:inherit;font-weight:700;cursor:pointer;transition:opacity .15s}
     .rec-act-main:active{opacity:.85}
-    .rec-act-sub{background:var(--pale);color:var(--muted);border:none;border-radius:var(--rs);padding:10px 12px;font-size:11px;font-family:inherit;cursor:pointer;transition:background .15s}
+    .rec-act-sub{background:#F6F8FC;color:#8A8A9E;border:1px solid #EEF0F8;border-radius:999px;padding:12px 14px;font-size:11px;font-family:inherit;cursor:pointer;transition:background .15s}
     .rec-act-sub:active{background:var(--pl)}
-    .next-slot-banner{background:var(--grad);border-radius:var(--r);padding:16px 20px;margin-bottom:14px;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.12)}
-    .nsb-title{font-size:11px;opacity:.85;font-weight:600;margin-bottom:2px}
-    .nsb-time{font-size:28px;font-weight:900;line-height:1.1;letter-spacing:-.5px}
-    .nsb-sub{font-size:11px;opacity:.8;margin-top:2px}
+    .next-slot-banner{background:#F6F8FC;border-radius:var(--r);padding:16px 20px;margin-bottom:14px;border:1px solid #EEF0F8;box-shadow:0 2px 16px rgba(142,134,245,0.08)}
+    .nsb-title{font-size:11px;font-weight:600;margin-bottom:2px;color:#8A8A9E}
+    .nsb-time{font-size:52px;font-weight:900;line-height:1;letter-spacing:-2px;color:#8E86F5}
+    .nsb-sub{font-size:12px;margin-top:4px;color:#8A8A9E}
     .flex-done{position:absolute;bottom:2px;right:3px;font-size:8px;color:#6B6B80;font-weight:700}
     .flex-complete-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:2px 5px;font-size:8px;font-family:inherit;cursor:pointer;color:#A09AB8;flex-shrink:0}
     /* Countdown banner */
@@ -218,9 +218,9 @@
     .dow-chip.on{border-color:var(--primary);background:var(--primary);color:#fff}
     .dow-chip.sun.on{border-color:#F87171;background:#F87171}
     .dow-chip.sat.on{border-color:#60A5FA;background:#60A5FA}
-    .btn-add{width:100%;background:var(--primary);color:#fff;border:none;border-radius:var(--rs);padding:13px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:6px}
+    .btn-add{width:100%;background:#8E86F5;color:#fff;border:none;border-radius:999px;padding:13px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:6px}
     .btn-add:active{opacity:.9}
-    .btn-cancel{width:100%;background:var(--bg);color:var(--muted);border:none;border-radius:var(--rs);padding:11px;font-size:13px;font-family:inherit;cursor:pointer;margin-top:6px}
+    .btn-cancel{width:100%;background:#F6F8FC;color:#8A8A9E;border:1px solid #EEF0F8;border-radius:999px;padding:11px;font-size:13px;font-family:inherit;cursor:pointer;margin-top:6px}
     .empty{text-align:center;padding:44px 20px;color:var(--muted)}
     .empty-icon{font-size:42px;margin-bottom:10px}
     .empty-text{font-size:13px;line-height:1.9}
@@ -423,9 +423,26 @@ function EmptyIllustStats(){const c='var(--primary)';return(
   </svg>
 );}
 
+// ===== PENGUIN MASCOT =====
+const PenguinMascot = () => (
+  <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+    <ellipse cx="36" cy="42" rx="22" ry="26" fill="#3B3B4F"/>
+    <ellipse cx="36" cy="44" rx="14" ry="18" fill="#F6F8FC"/>
+    <ellipse cx="27" cy="32" rx="4" ry="6" fill="#3B3B4F" transform="rotate(-20 27 32)"/>
+    <ellipse cx="45" cy="32" rx="4" ry="6" fill="#3B3B4F" transform="rotate(20 45 32)"/>
+    <circle cx="31" cy="30" r="3.5" fill="white"/>
+    <circle cx="41" cy="30" r="3.5" fill="white"/>
+    <circle cx="32" cy="30" r="2" fill="#3B3B4F"/>
+    <circle cx="42" cy="30" r="2" fill="#3B3B4F"/>
+    <ellipse cx="36" cy="35" rx="4" ry="2.5" fill="#FFAB40"/>
+    <ellipse cx="24" cy="58" rx="6" ry="3" fill="#FFAB40"/>
+    <ellipse cx="48" cy="58" rx="6" ry="3" fill="#FFAB40"/>
+  </svg>
+);
+
 // ===== THEMES =====
 const THEMES={
-  calm:   {name:'Calm',  emoji:'☁️', primary:'#8B7CF6',mid:'#BAB0F8',pl:'#EEEBFF',pale:'#F6F4FF',border:'#E6E2FF',bg:'#FDFCFF',card:'#FFFFFF',text:'#3D3660',muted:'#9E98BE',shadow:'0 2px 20px rgba(139,124,246,.10)',r:'20px',rs:'14px',grad:'linear-gradient(145deg,#A78BFA,#C084FC)'},
+  calm:   {name:'Calm',  emoji:'☁️', primary:'#8E86F5',mid:'#DCD6FF',pl:'#DCD6FF',pale:'#F6F8FC',border:'#EEF0F8',bg:'#FFFFFF',card:'#F6F8FC',text:'#3B3B4F',muted:'#8A8A9E',shadow:'0 2px 16px rgba(142,134,245,0.08)',r:'20px',rs:'12px',grad:'linear-gradient(135deg,#8E86F5,#B8B3FF)'},
   focus:  {name:'Focus', emoji:'✨', primary:'#374151',mid:'#6B7280',pl:'#F3F4F6',pale:'#F9FAFB',border:'#E5E7EB',bg:'#FAFAFA',card:'#FFFFFF',text:'#111827',muted:'#9CA3AF',shadow:'0 2px 20px rgba(0,0,0,.07)',r:'16px',rs:'10px',grad:'linear-gradient(145deg,#374151,#6B7280)'},
   bloom:  {name:'Bloom', emoji:'🌸', primary:'#EC4899',mid:'#F9A8D4',pl:'#FCE7F3',pale:'#FDF2F8',border:'#FBCFE8',bg:'#FFF5FA',card:'#FFFFFF',text:'#4A1942',muted:'#C084A0',shadow:'0 2px 20px rgba(236,72,153,.10)',r:'22px',rs:'16px',grad:'linear-gradient(145deg,#F472B6,#FB923C)'},
   forest: {name:'Forest',emoji:'🌿', primary:'#059669',mid:'#34D399',pl:'#D1FAE5',pale:'#ECFDF5',border:'#A7F3D0',bg:'#F0FDF8',card:'#FFFFFF',text:'#1A3D2B',muted:'#6EAF90',shadow:'0 2px 20px rgba(5,150,105,.09)',r:'18px',rs:'12px',grad:'linear-gradient(145deg,#10B981,#34D399)'},
@@ -1110,17 +1127,21 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
       {(()=>{
         const nextFixed=[...dayFixed,...dayEvents].map(b=>b.startTime??b.windowStart).filter(t=>t>nowMin).sort((a,b)=>a-b);
         const nextAt=nextFixed[0];
-        if(!isToday||nextAt==null)return null;
-        const gap=nextAt-nowMin;
-        if(gap>120)return null;
-        const nextName=([...dayFixed,...dayEvents].find(b=>(b.startTime??b.windowStart)===nextAt)||{}).name||'';
+        const gap=isToday&&nextAt!=null?nextAt-nowMin:null;
+        const nextName=gap!=null?([...dayFixed,...dayEvents].find(b=>(b.startTime??b.windowStart)===nextAt)||{}).name||'':'';
+        const displayMin=gap!=null?gap:(slots.length>0?slots[0].dur:null);
+        const displayName=gap!=null?(nextName?`${fmt(nextAt)}〜 ${nextName}まで`:''):(slots.length>0?`空き ${fmt(slots[0].start)}〜${fmt(slots[0].end)}`:'');
+        if(displayMin==null)return null;
         return(
           <div className="next-slot-banner anim-in">
-            <div style={{display:'flex',alignItems:'baseline',gap:6}}>
-              <div className="nsb-time">{gap}分</div>
-              <div className="nsb-title" style={{fontSize:13,opacity:.85}}>のスキマ時間</div>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+              <div>
+                <div className="nsb-title">次の予定まで</div>
+                <div className="nsb-time">{displayMin}<span style={{fontSize:22,marginLeft:4,fontWeight:700}}>分</span></div>
+                <div className="nsb-sub">{displayName}</div>
+              </div>
+              <PenguinMascot/>
             </div>
-            <div className="nsb-sub" style={{marginTop:3}}>{fmt(nextAt)}〜 {nextName}まで</div>
           </div>
         );
       })()}
@@ -1139,37 +1160,37 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
         const allSlots=slots.filter(s=>s.dur>=20);
         if(!allSlots.length||!data.tasks.length)return null;
         const bigSlot=allSlots.reduce((a,b)=>b.dur>a.dur?b:a,allSlots[0]);
-        const recs=suggestFor(bigSlot,data.tasks,condition);
+        const recs=suggestFor(bigSlot,data.tasks,condition).slice(0,3);
         if(!recs.length)return null;
-        const idx=recIdx%recs.length;
-        const t=recs[idx];
-        const reasons=[];
-        if(t.timeMode!=='open'&&t.maxDur<=bigSlot.dur)reasons.push(`${t.maxDur}分で終わる`);
-        if(t.deadline){const days=Math.round((new Date(t.deadline+'T00:00:00')-new Date())/86400000);if(days<=3)reasons.push(days===0?'今日が期限':days<0?`${-days}日超過`:`あと${days}日`);}
-        if(t.priority==='high')reasons.push('優先度が高い');
-        if(t.intensity==='light')reasons.push('気軽にできる');
-        if(t.timeMode==='open')reasons.push('コツコツ型');
+        const selIdx=recIdx%recs.length;
+        const selTask=recs[selIdx];
         return(
           <div className="rec-card anim-in">
             <div className="rec-title">
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 1L9.8 5.5H14.5L10.6 8.4L12 13L8 10.2L4 13L5.4 8.4L1.5 5.5H6.2L8 1Z" fill="var(--primary)"/></svg>
-              おすすめのタスク
-              <span style={{marginLeft:'auto',fontSize:10,color:'var(--muted)',fontWeight:600,background:'var(--pale)',padding:'2px 8px',borderRadius:100}}>{bigSlot.dur}分</span>
+              おすすめタスク
+              <span style={{marginLeft:'auto',fontSize:10,color:'var(--muted)',fontWeight:600,background:'var(--pale)',padding:'2px 8px',borderRadius:100}}>{bigSlot.dur}分のスキマ</span>
             </div>
-            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,padding:'10px 12px',background:'var(--pale)',borderRadius:10}}>
-              <span style={{width:10,height:10,borderRadius:'50%',background:PC[t.priority]||'#E0E0E0',flexShrink:0,display:'inline-block',boxShadow:'0 1px 4px rgba(0,0,0,.15)'}}/>
-              <span style={{fontWeight:800,fontSize:15,color:'var(--text)',flex:1,letterSpacing:'-.2px'}}>{t.name}</span>
-              <span style={{fontSize:11,color:'var(--muted)',fontWeight:600}}>{t.timeMode==='open'?'コツコツ':t.maxDur+'分'}</span>
-            </div>
-            {reasons.length>0&&(
-              <div className="rec-reasons">
-                {reasons.map((r,i)=><span key={i} className="rec-reason-tag">{r}</span>)}
+            {recs.map((t,i)=>(
+              <div key={t.id} onClick={()=>setRecIdx(i)} style={{
+                display:'flex',alignItems:'center',gap:8,marginBottom:6,
+                padding:'10px 12px',borderRadius:12,cursor:'pointer',
+                background:i===selIdx?'#F6F8FC':'transparent',
+                border:i===selIdx?'1.5px solid #8E86F5':'1.5px solid #EEF0F8',
+                transition:'all .15s',
+              }}>
+                <span style={{width:9,height:9,borderRadius:'50%',background:PC[t.priority]||'#E0E0E0',flexShrink:0,display:'inline-block'}}/>
+                <span style={{fontWeight:700,fontSize:13,color:'var(--text)',flex:1,letterSpacing:'-.2px'}}>{t.name}</span>
+                <span style={{fontSize:11,background:'#EEF0F8',color:'#8A8A9E',borderRadius:999,padding:'2px 8px',fontWeight:600,flexShrink:0}}>{t.timeMode==='open'?'コツコツ':t.maxDur+'分'}</span>
+                <button style={{background:'#8E86F5',color:'#fff',border:'none',borderRadius:999,padding:'4px 12px',fontSize:11,fontWeight:700,cursor:'pointer',fontFamily:'inherit',flexShrink:0}} onClick={e=>{e.stopPropagation();onOpenPomodoro(t);}}>やる</button>
               </div>
-            )}
-            <div className="rec-actions">
-              <button className="rec-act-main" onClick={()=>onOpenPomodoro(t)}>▶ やる</button>
-              {recs.length>1&&<button className="rec-act-sub" onClick={()=>setRecIdx(p=>p+1)}>↻ 別の候補</button>}
-              <button className="rec-act-sub" onClick={()=>setRecDismissed(true)}>☕ 休む</button>
+            ))}
+            <div className="rec-actions" style={{marginTop:10}}>
+              <button className="rec-act-main" style={{flex:'unset',width:'100%',marginBottom:8}} onClick={()=>onOpenPomodoro(selTask)}>▶ このタスクをやる</button>
+              <div style={{display:'flex',gap:6}}>
+                {recs.length>1&&<button className="rec-act-sub" style={{flex:1}} onClick={()=>setRecIdx(p=>(p+1)%recs.length)}>↻ 別の候補を見る</button>}
+                <button className="rec-act-sub" style={{flex:1}} onClick={()=>setRecDismissed(true)}>☕ 今は休む</button>
+              </div>
             </div>
           </div>
         );
@@ -2334,7 +2355,36 @@ function App(){
                   <button className={`cal-toggle-btn${calMode==='week'?' on':''}`} onClick={()=>setCalMode('week')}>週</button>
                 </div>
                 {calMode==='month'
-                  ? <MonthCalendar events={data.events} selectedDate={selDate} onSelectDate={d=>setSelDate(d)}/>
+                  ? <>
+                      <MonthCalendar events={data.events} selectedDate={selDate} onSelectDate={d=>setSelDate(d)}/>
+                      {(()=>{
+                        const ds=selDate||today();
+                        const d=new Date(ds+'T00:00:00');
+                        const dow=d.getDay();
+                        const dayFixed=data.fixedBlocks.filter(b=>{
+                          if(!(b.days||ALL_DAYS).includes(dow))return false;
+                          if((skips[ds]||[]).includes(b.id))return false;
+                          if(b.startDate&&ds<b.startDate)return false;
+                          if(b.endDate&&ds>b.endDate)return false;
+                          return true;
+                        });
+                        const dayEvents=data.events.filter(e=>e.date===ds);
+                        const allBlocks=[...dayFixed.map(b=>b.timeMode==='range'?{...b,startTime:b.windowStart,endTime:b.windowStart+b.duration}:b),...dayEvents];
+                        const freeSlots=getFreeSlots(allBlocks);
+                        if(!freeSlots.length)return null;
+                        return(
+                          <div style={{marginTop:16}}>
+                            <div style={{fontSize:13,fontWeight:700,color:'#3B3B4F',marginBottom:8}}>空き時間</div>
+                            {freeSlots.map((slot,i)=>(
+                              <div key={i} style={{display:'flex',alignItems:'center',padding:'10px 0',borderBottom:'1px solid #EEF0F8'}}>
+                                <span style={{fontSize:14,color:'#3B3B4F',flex:1}}>{fmt(slot.start)} - {fmt(slot.end)}</span>
+                                <span style={{fontSize:13,fontWeight:700,color:'#8E86F5'}}>{slot.dur}分</span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </>
                   : <WeekView data={data} skips={skips} onSelectDate={d=>{setSelDate(d);}}/>
                 }
               </>
