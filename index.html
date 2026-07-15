@@ -1111,7 +1111,7 @@ function MonthCalendar({events,onSelectDate,selectedDate}){
 }
 
 // ===== DAY VIEW =====
-function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips,onToggleSkip,onCompleteBlock,condition='normal',onConditionChange}){
+function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips,onToggleSkip,onCompleteBlock,condition='normal'}){
   const d=new Date(dateStr+'T00:00:00');
   const dow=d.getDay();
   const isToday=dateStr===today();
@@ -1145,96 +1145,6 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
   const now=new Date();
   const nowMin=now.getHours()*60+now.getMinutes();
   const showNow=isToday&&nowMin>=TS&&nowMin<TE;
-
-  // ===== TODAY SCREEN (airy redesign) — shown on the Today tab (no back button) =====
-  const[recIdxT,setRecIdxT]=React.useState(0);
-  if(!onBack){
-    // hero: minutes until next block
-    const upcoming=[...dayFixed,...dayEvents]
-      .map(b=>({at:b.startTime??b.windowStart,name:b.name}))
-      .filter(b=>b.at>nowMin).sort((a,b)=>a.at-b.at);
-    const nextBlock=upcoming[0];
-    const gap=isToday&&nextBlock?nextBlock.at-nowMin:null;
-    // recommendations
-    const bigSlots=slots.filter(s=>s.dur>=20);
-    const bigSlot=bigSlots.length?bigSlots.reduce((a,b)=>b.dur>a.dur?b:a,bigSlots[0]):null;
-    const recs=bigSlot?suggestFor(bigSlot,data.tasks,condition).slice(0,3):[];
-    const selIdx=recs.length?recIdxT%recs.length:0;
-    const selTask=recs[selIdx];
-    // today's schedule (sorted)
-    const schedule=[...allBlocks].sort((a,b)=>(a.startTime??a.windowStart)-(b.startTime??b.windowStart));
-    return(
-      <div className="td-wrap">
-        {/* Section 1: hero */}
-        <div className="td-hero">
-          <div>
-            <div className="td-hero-label">次の予定まで</div>
-            <div className="td-hero-num">
-              {gap!=null?gap:(slots.length?slots[0].dur:0)}<span className="td-hero-unit">分</span>
-            </div>
-            <div className="td-hero-sub">
-              {gap!=null&&nextBlock
-                ? `${fmt(nextBlock.at)}〜 ${nextBlock.name}`
-                : slots.length?`空き ${fmt(slots[0].start)}〜${fmt(slots[0].end)}`:'今日はゆっくり過ごそう'}
-            </div>
-          </div>
-          <PenguinSVG size={64}/>
-        </div>
-
-        {/* Section 2: recommended tasks */}
-        {recs.length>0&&(
-          <div className="td-section">
-            <div className="td-seclabel">おすすめのタスク ✦</div>
-            {recs.map((t,i)=>(
-              <div key={t.id} className={`td-rec${i===selIdx?' sel':''}`} onClick={()=>setRecIdxT(i)}>
-                <div className="td-radio">{i===selIdx&&<div className="td-radio-dot"/>}</div>
-                <div style={{flex:1,minWidth:0}}>
-                  <div className="td-rec-name">{t.name}</div>
-                  <div className="td-rec-cat">{t.category}</div>
-                </div>
-                <span className="td-dur">{t.timeMode==='open'?'コツコツ':t.maxDur+'分'}</span>
-                <button className="td-do" onClick={e=>{e.stopPropagation();onOpenPomodoro(t);}}>やる</button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Section 3: action buttons */}
-        <div className="td-actions">
-          <button className="td-btn-main" onClick={()=>onOpenPomodoro(selTask||null)}>このタスクをやる ▶</button>
-          {recs.length>1&&<button className="td-btn-sub" onClick={()=>setRecIdxT(p=>(p+1)%recs.length)}>別の候補を見る</button>}
-          <button className="td-btn-sub" onClick={()=>onOpenPomodoro(null)}>今は休む ☕</button>
-        </div>
-
-        {/* Section 4: today's schedule */}
-        {schedule.length>0&&(
-          <div className="td-section">
-            <div className="td-seclabel">今日の予定</div>
-            {schedule.map((b,i)=>{
-              const s=b.startTime??b.windowStart, e=b.endTime??(b.windowStart+(b.duration||0));
-              return(
-                <div key={i} className="td-ev">
-                  <span className="td-ev-time">{fmt(s)} – {fmt(e)}</span>
-                  <span className="td-ev-name">{b.name}</span>
-                  <span className="td-ev-tag">{b.category}</span>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Section 5: condition */}
-        <div className="td-section">
-          <div className="td-cond">
-            <span className="td-cond-label">今の状態</span>
-            {[['energetic','元気'],['normal','普通'],['tired','疲れ']].map(([v,l])=>(
-              <button key={v} className={`td-cond-btn${condition===v?' on':''}`} onClick={()=>onConditionChange&&onConditionChange(v)}>{l}</button>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return(
     <div>
@@ -1272,21 +1182,17 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
       {(()=>{
         const nextFixed=[...dayFixed,...dayEvents].map(b=>b.startTime??b.windowStart).filter(t=>t>nowMin).sort((a,b)=>a-b);
         const nextAt=nextFixed[0];
-        const gap=isToday&&nextAt!=null?nextAt-nowMin:null;
-        const nextName=gap!=null?([...dayFixed,...dayEvents].find(b=>(b.startTime??b.windowStart)===nextAt)||{}).name||'':'';
-        const displayMin=gap!=null?gap:(slots.length>0?slots[0].dur:null);
-        const displayName=gap!=null?(nextName?`${fmt(nextAt)}〜 ${nextName}まで`:''):(slots.length>0?`空き ${fmt(slots[0].start)}〜${fmt(slots[0].end)}`:'');
-        if(displayMin==null)return null;
+        if(!isToday||nextAt==null)return null;
+        const gap=nextAt-nowMin;
+        if(gap>120)return null;
+        const nextName=([...dayFixed,...dayEvents].find(b=>(b.startTime??b.windowStart)===nextAt)||{}).name||'';
         return(
           <div className="next-slot-banner anim-in">
-            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-              <div>
-                <div className="nsb-title">次の予定まで</div>
-                <div className="nsb-time">{displayMin}<span style={{fontSize:22,marginLeft:4,fontWeight:700}}>分</span></div>
-                <div className="nsb-sub">{displayName}</div>
-              </div>
-              <PenguinMascot/>
+            <div style={{display:'flex',alignItems:'baseline',gap:6}}>
+              <div className="nsb-time">{gap}分</div>
+              <div className="nsb-title" style={{fontSize:13,opacity:.85}}>のスキマ時間</div>
             </div>
+            <div className="nsb-sub" style={{marginTop:3}}>{fmt(nextAt)}〜 {nextName}まで</div>
           </div>
         );
       })()}
@@ -1305,37 +1211,37 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
         const allSlots=slots.filter(s=>s.dur>=20);
         if(!allSlots.length||!data.tasks.length)return null;
         const bigSlot=allSlots.reduce((a,b)=>b.dur>a.dur?b:a,allSlots[0]);
-        const recs=suggestFor(bigSlot,data.tasks,condition).slice(0,3);
+        const recs=suggestFor(bigSlot,data.tasks,condition);
         if(!recs.length)return null;
-        const selIdx=recIdx%recs.length;
-        const selTask=recs[selIdx];
+        const idx=recIdx%recs.length;
+        const t=recs[idx];
+        const reasons=[];
+        if(t.timeMode!=='open'&&t.maxDur<=bigSlot.dur)reasons.push(`${t.maxDur}分で終わる`);
+        if(t.deadline){const days=Math.round((new Date(t.deadline+'T00:00:00')-new Date())/86400000);if(days<=3)reasons.push(days===0?'今日が期限':days<0?`${-days}日超過`:`あと${days}日`);}
+        if(t.priority==='high')reasons.push('優先度が高い');
+        if(t.intensity==='light')reasons.push('気軽にできる');
+        if(t.timeMode==='open')reasons.push('コツコツ型');
         return(
           <div className="rec-card anim-in">
             <div className="rec-title">
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 1L9.8 5.5H14.5L10.6 8.4L12 13L8 10.2L4 13L5.4 8.4L1.5 5.5H6.2L8 1Z" fill="var(--primary)"/></svg>
-              おすすめタスク
-              <span style={{marginLeft:'auto',fontSize:10,color:'var(--muted)',fontWeight:600,background:'var(--pale)',padding:'2px 8px',borderRadius:100}}>{bigSlot.dur}分のスキマ</span>
+              おすすめのタスク
+              <span style={{marginLeft:'auto',fontSize:10,color:'var(--muted)',fontWeight:600,background:'var(--pale)',padding:'2px 8px',borderRadius:100}}>{bigSlot.dur}分</span>
             </div>
-            {recs.map((t,i)=>(
-              <div key={t.id} onClick={()=>setRecIdx(i)} style={{
-                display:'flex',alignItems:'center',gap:8,marginBottom:6,
-                padding:'10px 12px',borderRadius:12,cursor:'pointer',
-                background:i===selIdx?'#F6F8FC':'transparent',
-                border:i===selIdx?'1.5px solid #8E86F5':'1.5px solid #EEF0F8',
-                transition:'all .15s',
-              }}>
-                <span style={{width:9,height:9,borderRadius:'50%',background:PC[t.priority]||'#E0E0E0',flexShrink:0,display:'inline-block'}}/>
-                <span style={{fontWeight:700,fontSize:13,color:'var(--text)',flex:1,letterSpacing:'-.2px'}}>{t.name}</span>
-                <span style={{fontSize:11,background:'#EEF0F8',color:'#8A8A9E',borderRadius:999,padding:'2px 8px',fontWeight:600,flexShrink:0}}>{t.timeMode==='open'?'コツコツ':t.maxDur+'分'}</span>
-                <button style={{background:'#8E86F5',color:'#fff',border:'none',borderRadius:999,padding:'4px 12px',fontSize:11,fontWeight:700,cursor:'pointer',fontFamily:'inherit',flexShrink:0}} onClick={e=>{e.stopPropagation();onOpenPomodoro(t);}}>やる</button>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,padding:'10px 12px',background:'var(--pale)',borderRadius:10}}>
+              <span style={{width:10,height:10,borderRadius:'50%',background:PC[t.priority]||'#E0E0E0',flexShrink:0,display:'inline-block',boxShadow:'0 1px 4px rgba(0,0,0,.15)'}}/>
+              <span style={{fontWeight:800,fontSize:15,color:'var(--text)',flex:1,letterSpacing:'-.2px'}}>{t.name}</span>
+              <span style={{fontSize:11,color:'var(--muted)',fontWeight:600}}>{t.timeMode==='open'?'コツコツ':t.maxDur+'分'}</span>
+            </div>
+            {reasons.length>0&&(
+              <div className="rec-reasons">
+                {reasons.map((r,i)=><span key={i} className="rec-reason-tag">{r}</span>)}
               </div>
-            ))}
-            <div className="rec-actions" style={{marginTop:10}}>
-              <button className="rec-act-main" style={{flex:'unset',width:'100%',marginBottom:8}} onClick={()=>onOpenPomodoro(selTask)}>▶ このタスクをやる</button>
-              <div style={{display:'flex',gap:6}}>
-                {recs.length>1&&<button className="rec-act-sub" style={{flex:1}} onClick={()=>setRecIdx(p=>(p+1)%recs.length)}>↻ 別の候補を見る</button>}
-                <button className="rec-act-sub" style={{flex:1}} onClick={()=>setRecDismissed(true)}>☕ 今は休む</button>
-              </div>
+            )}
+            <div className="rec-actions">
+              <button className="rec-act-main" onClick={()=>onOpenPomodoro(t)}>▶ やる</button>
+              {recs.length>1&&<button className="rec-act-sub" onClick={()=>setRecIdx(p=>p+1)}>↻ 別の候補</button>}
+              <button className="rec-act-sub" onClick={()=>setRecDismissed(true)}>☕ 休む</button>
             </div>
           </div>
         );
