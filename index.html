@@ -509,32 +509,170 @@ const getSug=name=>{for(const[k,v]of Object.entries(DICT)){if(name.includes(k))r
 // ===== STORAGE =====
 
 function guestDefaults(){
-  // Time-relative sample data so the app value is immediately visible
+  // ===============================================================
+  // GUEST SAMPLE DATA — about 1 month of a typical university student
+  // Dates are generated relative to today so the data always feels current
+  // ===============================================================
   const now=new Date();
   const cur=now.getHours()*60+now.getMinutes();
   const ds=today();
-  // place events ~40min and ~3h from now
+  // Helper: dateStr relative to today (offset in days)
+  const rel=(offset=0)=>{
+    const d=new Date(now); d.setDate(d.getDate()+offset);
+    return toStr(d);
+  };
+  // Fixed IDs start from 1
+  const FIXED = {
+    PREP:1, BREAKFAST:2, LUNCH:3, DINNER:4, BATH:5,
+    CLASS_A:6, CLASS_B:7, CLASS_C:8, CLASS_D:9,
+    BAITO_WED:10, BAITO_FRI:11, CIRCLE:12, GYM:13,
+  };
+  const TASK = {
+    MAIL:1, EIGO:2, REPORT_A:3, REPORT_B:4,
+    STRETCH:5, DOKUSHO:6, ES:7, TOUKEI:8,
+    FP:9, SOUJI:10, LINE:11,
+  };
+
+  // ── FIXED BLOCKS (recurring weekly schedule) ──
+  const fixedBlocks=[
+    {id:FIXED.PREP,      name:'朝の準備', timeMode:'range', windowStart:390,windowEnd:540, duration:35,category:'準備', days:ALL_DAYS},
+    {id:FIXED.BREAKFAST, name:'朝食',     timeMode:'range', windowStart:420,windowEnd:600, duration:25,category:'食事', days:ALL_DAYS},
+    {id:FIXED.DINNER,    name:'夕食',     timeMode:'range', windowStart:1080,windowEnd:1230,duration:40,category:'食事', days:ALL_DAYS},
+    {id:FIXED.BATH,      name:'お風呂',   timeMode:'range', windowStart:1200,windowEnd:1380,duration:30,category:'生活', days:ALL_DAYS},
+    // 月水金 1限 (9:00-10:30)
+    {id:FIXED.CLASS_A,   name:'統計学',   timeMode:'fixed', startTime:540, endTime:630,  category:'勉強', days:[1,3,5]},
+    // 火木 2限 (10:40-12:10)
+    {id:FIXED.CLASS_B,   name:'英語',     timeMode:'fixed', startTime:640, endTime:730,  category:'勉強', days:[2,4]},
+    // 月火 3限 (13:00-14:30)
+    {id:FIXED.CLASS_C,   name:'経済学',   timeMode:'fixed', startTime:780, endTime:870,  category:'勉強', days:[1,2]},
+    // 水金 4限後バイト (17:30-21:00)
+    {id:FIXED.BAITO_WED, name:'アルバイト', timeMode:'fixed', startTime:1050,endTime:1260,category:'バイト', days:[3]},
+    {id:FIXED.BAITO_FRI, name:'アルバイト', timeMode:'fixed', startTime:1050,endTime:1260,category:'バイト', days:[5]},
+    // 木 サークル (18:00-20:00)
+    {id:FIXED.CIRCLE,    name:'テニスサークル', timeMode:'fixed', startTime:1080,endTime:1200,category:'趣味', days:[4]},
+    // 土 ジム (10:00-11:30)
+    {id:FIXED.GYM,       name:'ジム',     timeMode:'range', windowStart:600,windowEnd:780,duration:60,category:'健康', days:[6]},
+  ];
+
+  // ── TASKS ──
+  const tomorrow=rel(1);
+  const in3=rel(3); const in5=rel(5); const in10=rel(10);
+  const tasks=[
+    {id:TASK.MAIL,    name:'メールの返信',    timeMode:'timed',minDur:5, maxDur:10, priority:'high',  freq:'daily',  pref:'anytime',   category:'その他', intensity:'light'},
+    {id:TASK.EIGO,    name:'英単語',          timeMode:'timed',minDur:10,maxDur:15, priority:'medium',freq:'daily',  pref:'morning',   category:'勉強',   intensity:'light'},
+    {id:TASK.STRETCH, name:'ストレッチ',      timeMode:'timed',minDur:5, maxDur:10, priority:'low',   freq:'daily',  pref:'anytime',   category:'健康',   intensity:'light'},
+    {id:TASK.LINE,    name:'LINEの返信',      timeMode:'timed',minDur:5, maxDur:10, priority:'medium',freq:'daily',  pref:'anytime',   category:'その他', intensity:'mobile'},
+    {id:TASK.REPORT_A,name:'統計レポート',    timeMode:'timed',minDur:45,maxDur:60, priority:'high',  freq:'once',   pref:'afternoon', category:'勉強',   intensity:'focus', deadline:in3},
+    {id:TASK.REPORT_B,name:'経済学レポート',  timeMode:'timed',minDur:30,maxDur:50, priority:'high',  freq:'once',   pref:'afternoon', category:'勉強',   intensity:'focus', deadline:in5},
+    {id:TASK.TOUKEI,  name:'統計の問題集',    timeMode:'open', minDur:0,  maxDur:0,  priority:'high',  freq:'weekly', pref:'anytime',   category:'勉強',   intensity:'focus'},
+    {id:TASK.ES,      name:'就活エントリーシート', timeMode:'timed',minDur:60,maxDur:90,priority:'high',freq:'once',pref:'afternoon',category:'その他',intensity:'focus',deadline:in10},
+    {id:TASK.FP,      name:'FP資格勉強',      timeMode:'open', minDur:0,  maxDur:0,  priority:'medium',freq:'daily',  pref:'anytime',   category:'勉強',   intensity:'light'},
+    {id:TASK.DOKUSHO, name:'読書',            timeMode:'open', minDur:0,  maxDur:0,  priority:'low',   freq:'weekly', pref:'evening',   category:'趣味',   intensity:'light'},
+    {id:TASK.SOUJI,   name:'部屋の掃除',      timeMode:'timed',minDur:20,maxDur:35, priority:'low',   freq:'weekly', pref:'morning',   category:'家事',   intensity:'any'},
+  ];
+
+  // ── ONE-OFF EVENTS (past, present, future) ──
+  const events=[];
+  let eid=20;
+  const ev=(name,offset,st,et,cat)=>{events.push({id:eid++,name,date:rel(offset),startTime:st,endTime:et,category:cat});};
+
+  // Past events (last ~4 weeks)
+  ev('歯医者',         -25, 600, 660, '生活');
+  ev('友達と昼食',     -22, 720, 840, '食事');
+  ev('サークルBBQ',    -18, 960, 1200,'趣味');
+  ev('健康診断',       -15, 570, 660, '生活');
+  ev('期末試験①英語', -12, 660, 780, '勉強');
+  ev('期末試験②統計', -10, 540, 660, '勉強');
+  ev('映画鑑賞',       -5,  720, 900, '趣味');
+  ev('スーパーへ買い物',-3, 1020,1080,'生活');
+  ev('友達とカフェ',   -1,  840, 1020,'趣味');
+
+  // Today: place 1 event based on current time (40-50min from now)
   const round30=m=>Math.ceil(m/30)*30;
-  const ev1Start=Math.min(round30(cur+40),TE-90);
-  const ev2Start=Math.min(round30(cur+180),TE-90);
+  const todayEv=Math.min(round30(cur+45),TE-90);
+  ev('授業', 0, todayEv, Math.min(todayEv+90,TE), '勉強');
+
+  // Future events (next ~3 weeks)
+  ev('就活セミナー',    3, 780, 960, 'その他');
+  ev('友達と焼肉',      6, 1080,1260,'食事');
+  ev('花火大会',        9, 1140,1380,'趣味');
+  ev('帰省',           12,  480, 1440,'生活');
+  ev('オープンキャンパスボランティア',16,510,960,'その他');
+  ev('夏祭り',         20,1140,1380,'趣味');
+  ev('バーベキュー',   23,1020,1260,'趣味');
+  ev('バイト先の飲み会',26,1080,1260,'生活');
+
+  // ── LOGS (past ~3 weeks: pomodoro + quick-log records) ──
+  const logs=[];
+  let lid=100;
+  const log=(dOffset,name,taskId,duration,category)=>{
+    logs.push({id:lid++,date:rel(dOffset),name,taskId,duration,category});
+  };
+
+  // Week -3
+  log(-20,'英単語',        TASK.EIGO,    12,'勉強');
+  log(-20,'メールの返信',  TASK.MAIL,     8,'その他');
+  log(-20,'FP資格勉強',    TASK.FP,      25,'勉強');
+  log(-19,'ストレッチ',    TASK.STRETCH,  7,'健康');
+  log(-19,'英単語',        TASK.EIGO,    15,'勉強');
+  log(-18,'統計の問題集',  TASK.TOUKEI,  45,'勉強');
+  log(-18,'メールの返信',  TASK.MAIL,     5,'その他');
+  log(-17,'読書',          TASK.DOKUSHO, 30,'趣味');
+  log(-17,'FP資格勉強',    TASK.FP,      20,'勉強');
+  log(-16,'英単語',        TASK.EIGO,    10,'勉強');
+  log(-16,'ストレッチ',    TASK.STRETCH,  8,'健康');
+  log(-16,'部屋の掃除',    TASK.SOUJI,   25,'家事');
+
+  // Week -2
+  log(-13,'英単語',        TASK.EIGO,    15,'勉強');
+  log(-13,'統計の問題集',  TASK.TOUKEI,  50,'勉強');
+  log(-12,'メールの返信',  TASK.MAIL,     6,'その他');
+  log(-12,'FP資格勉強',    TASK.FP,      30,'勉強');
+  log(-11,'ストレッチ',    TASK.STRETCH, 10,'健康');
+  log(-11,'読書',          TASK.DOKUSHO, 45,'趣味');
+  log(-10,'英単語',        TASK.EIGO,    12,'勉強');
+  log(-10,'LINEの返信',    TASK.LINE,     5,'その他');
+  log(-9, '統計の問題集',  TASK.TOUKEI,  40,'勉強');
+  log(-9, 'FP資格勉強',    TASK.FP,      25,'勉強');
+  log(-8, 'ストレッチ',    TASK.STRETCH,  7,'健康');
+  log(-8, 'メールの返信',  TASK.MAIL,     8,'その他');
+
+  // Week -1
+  log(-6, '英単語',        TASK.EIGO,    15,'勉強');
+  log(-6, 'FP資格勉強',    TASK.FP,      35,'勉強');
+  log(-5, '統計の問題集',  TASK.TOUKEI,  55,'勉強');
+  log(-5, 'ストレッチ',    TASK.STRETCH,  8,'健康');
+  log(-4, '読書',          TASK.DOKUSHO, 30,'趣味');
+  log(-4, 'LINEの返信',    TASK.LINE,     5,'その他');
+  log(-3, '英単語',        TASK.EIGO,    12,'勉強');
+  log(-3, 'メールの返信',  TASK.MAIL,     7,'その他');
+  log(-2, 'FP資格勉強',    TASK.FP,      30,'勉強');
+  log(-2, 'ストレッチ',    TASK.STRETCH, 10,'健康');
+  log(-2, '部屋の掃除',    TASK.SOUJI,   30,'家事');
+  log(-1, '英単語',        TASK.EIGO,    15,'勉強');
+  log(-1, 'LINEの返信',    TASK.LINE,     6,'その他');
+  log(-1, 'FP資格勉強',    TASK.FP,      40,'勉強');
+
+  // ── COMPLETIONS (derived from logs: which task was done on which date) ──
+  const completions={};
+  for(const l of logs){
+    if(l.taskId!=null){
+      if(!completions[l.date])completions[l.date]=[];
+      if(!completions[l.date].includes(l.taskId))
+        completions[l.date].push(l.taskId);
+    }
+  }
+
+  // ── SKIPS (a few realistic skips) ──
+  const skips={
+    [rel(-14)]:[FIXED.GYM],       // 土: ジムさぼり
+    [rel(-7)] :[FIXED.GYM],       // 土: またさぼり
+    [rel(-3)] :[FIXED.CIRCLE],    // 木: サークル欠席（試験勉強優先）
+  };
+
   return{
-    fixedBlocks:[
-      {id:1,name:'朝の準備',timeMode:'range',windowStart:360,windowEnd:540,duration:45,category:'準備',days:ALL_DAYS},
-      {id:2,name:'朝食',    timeMode:'range',windowStart:390,windowEnd:540,duration:20,category:'食事',days:ALL_DAYS},
-      {id:3,name:'夕食',    timeMode:'range',windowStart:1050,windowEnd:1200,duration:40,category:'食事',days:ALL_DAYS},
-      {id:4,name:'お風呂',  timeMode:'range',windowStart:1140,windowEnd:1320,duration:30,category:'生活',days:ALL_DAYS},
-    ],
-    tasks:[
-      {id:1,name:'メール返信',timeMode:'timed',minDur:5,maxDur:10,priority:'high',freq:'daily',pref:'anytime',category:'その他',intensity:'light'},
-      {id:2,name:'英単語',    timeMode:'timed',minDur:10,maxDur:15,priority:'medium',freq:'daily',pref:'anytime',category:'勉強',intensity:'light'},
-      {id:3,name:'レポート',  timeMode:'timed',minDur:30,maxDur:60,priority:'high',freq:'once',pref:'afternoon',category:'勉強',intensity:'focus',
-        deadline:new Date(new Date().setDate(new Date().getDate()+1)).toISOString().slice(0,10)},
-    ],
-    events:[
-      {id:10,name:'授業',    date:ds,startTime:ev1Start,endTime:ev1Start+90,category:'勉強'},
-      {id:11,name:'アルバイト',date:ds,startTime:ev2Start,endTime:ev2Start+90,category:'バイト'},
-    ],
-    completions:{},logs:[],skips:{},blockCompletions:{},nextId:20,
+    fixedBlocks,tasks,events,completions,logs,skips,
+    blockCompletions:{},nextId:200,
   };
 }
 
