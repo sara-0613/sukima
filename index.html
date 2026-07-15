@@ -8,10 +8,19 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     :root{
-      --primary:#8E86F5;--primary-mid:#DCD6FF;--pl:#DCD6FF;--pale:#F6F8FC;
-      --bg:#FFFFFF;--card:#F6F8FC;--text:#3B3B4F;--muted:#8A8A9E;--border:#EEF0F8;
+      /* redesign tokens */
+      --surface:#FFFFFF;
+      --primary-soft:#F0EEFF;
+      --sub:#8A8A9E;
+      --accent-pink:#F6DCE8;
+      --accent-mint:#DFF2E8;
+      --shadow-sm:0 1px 6px rgba(142,134,245,0.05);
+      --r-sm:12px;--r-md:20px;--r-lg:28px;--r-pill:999px;--sp:8px;
+      /* app variables (also driven by applyTheme) */
+      --primary:#8E86F5;--primary-mid:#DCD6FF;--pl:#F0EEFF;--pale:#F6F8FC;
+      --bg:#FCFCFF;--card:#FFFFFF;--text:#34334F;--muted:#8A8A9E;--border:#ECEAF5;
       --grad:linear-gradient(135deg,#8E86F5,#B8B3FF);
-      --shadow:0 2px 16px rgba(142,134,245,0.08);--r:20px;--rs:12px;
+      --shadow:0 2px 16px rgba(142,134,245,0.07);--r:20px;--rs:12px;
     }
     html,body,#root{height:100%;overflow-x:hidden}
     body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);font-size:14px;transition:background .3s}
@@ -25,15 +34,14 @@
     .hdr-badge{background:rgba(255,255,255,.25);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700;backdrop-filter:blur(8px)}
 
     /* Nav */
-    .bnav{background:#FFFFFF;border-top:1px solid var(--border);display:flex;position:sticky;bottom:0;z-index:100;padding-bottom:env(safe-area-inset-bottom,0);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-    .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px 11px;border:none;background:none;cursor:pointer;font-size:10px;font-family:inherit;color:var(--muted);transition:color .15s;position:relative}
+    .bnav{background:var(--surface);border-top:1px solid var(--border);display:flex;position:sticky;bottom:0;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
+    .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 11px;border:none;background:none;cursor:pointer;font-size:10px;font-family:inherit;color:var(--sub);transition:color .15s;position:relative}
     .ni.on{color:var(--primary)}
-    .ni.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:2.5px;background:var(--primary);border-radius:2px}
-    .ni-icon{font-size:20px;display:flex;align-items:center;justify-content:center;transition:transform .15s}
-    .ni.on .ni-icon{transform:scale(1.12)}
+    .ni-icon{font-size:20px;display:flex;align-items:center;justify-content:center;width:44px;height:26px;border-radius:var(--r-pill);transition:background .15s}
+    .ni.on .ni-icon{background:var(--primary-soft)}
 
     /* Screen */
-    .screen{flex:1;overflow-y:auto;padding:16px 16px 96px}
+    .screen{flex:1;overflow-y:auto;padding:20px 20px 96px}
 
     /* ── MONTHLY CALENDAR ── */
     .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -226,6 +234,37 @@
     .empty-text{font-size:13px;line-height:1.9}
     ::-webkit-scrollbar{width:3px}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+    /* ── TODAY REDESIGN ── */
+    .td-wrap{padding:4px 0 0}
+    .td-hero{background:var(--primary-soft);border-radius:var(--r-lg);padding:26px 24px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:30vh}
+    .td-hero-label{font-size:13px;color:var(--sub);margin-bottom:12px}
+    .td-hero-num{font-size:56px;font-weight:900;letter-spacing:-2px;color:var(--primary);line-height:1}
+    .td-hero-unit{font-size:22px;font-weight:700;margin-left:4px;letter-spacing:0}
+    .td-hero-sub{font-size:13px;color:var(--sub);margin-top:14px}
+    .td-seclabel{font-size:12px;font-weight:700;color:var(--sub);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px}
+    .td-section{margin-bottom:32px}
+    .td-rec{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r-sm);cursor:pointer;transition:background .15s;background:transparent}
+    .td-rec.sel{background:var(--surface);border-left:3px solid var(--primary);box-shadow:var(--shadow-sm)}
+    .td-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .td-rec.sel .td-radio{border-color:var(--primary)}
+    .td-radio-dot{width:10px;height:10px;border-radius:50%;background:var(--primary)}
+    .td-rec-name{font-size:15px;font-weight:600;color:var(--text)}
+    .td-rec-cat{font-size:11px;color:var(--sub);margin-top:3px}
+    .td-dur{font-size:11px;background:var(--primary-soft);color:var(--primary);border-radius:var(--r-pill);padding:3px 9px;font-weight:600;flex-shrink:0}
+    .td-do{background:none;border:none;color:var(--primary);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;flex-shrink:0;padding:4px}
+    .td-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+    .td-btn-main{width:100%;height:52px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-pill);font-size:16px;font-weight:700;font-family:inherit;cursor:pointer}
+    .td-btn-sub{width:100%;height:44px;background:var(--surface);color:var(--sub);border:1px solid var(--border);border-radius:var(--r-pill);font-size:14px;font-family:inherit;cursor:pointer}
+    .td-btn-main:active,.td-btn-sub:active{opacity:.85}
+    .td-ev{display:flex;align-items:center;gap:12px;padding:11px 0 11px 12px;border-left:2px solid var(--primary-soft)}
+    .td-ev-time{font-size:12px;color:var(--sub);flex-shrink:0;width:96px}
+    .td-ev-name{font-size:14px;font-weight:500;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .td-ev-tag{font-size:11px;background:var(--primary-soft);color:var(--primary);border-radius:var(--r-pill);padding:2px 9px;flex-shrink:0}
+    .td-cond{display:flex;align-items:center;gap:8px}
+    .td-cond-label{font-size:13px;color:var(--sub);margin-right:4px}
+    .td-cond-btn{border:1px solid var(--border);background:var(--surface);color:var(--sub);border-radius:var(--r-pill);padding:7px 16px;font-size:13px;font-family:inherit;cursor:pointer}
+    .td-cond-btn.on{background:var(--primary);color:#fff;border-color:var(--primary)}
 
     /* ── WEEK VIEW ── */
     .week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -440,9 +479,25 @@ const PenguinMascot = () => (
   </svg>
 );
 
+const PenguinSVG = ({size=64}) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+    <ellipse cx="32" cy="38" rx="20" ry="22" fill="#34334F"/>
+    <ellipse cx="32" cy="40" rx="12" ry="16" fill="#F6F8FC"/>
+    <ellipse cx="14" cy="36" rx="5" ry="9" fill="#34334F" transform="rotate(-15 14 36)"/>
+    <ellipse cx="50" cy="36" rx="5" ry="9" fill="#34334F" transform="rotate(15 50 36)"/>
+    <circle cx="26" cy="26" r="5" fill="white"/>
+    <circle cx="38" cy="26" r="5" fill="white"/>
+    <circle cx="27" cy="27" r="3" fill="#34334F"/>
+    <circle cx="39" cy="27" r="3" fill="#34334F"/>
+    <ellipse cx="32" cy="32" rx="4" ry="2.5" fill="#FFAB40"/>
+    <ellipse cx="22" cy="58" rx="6" ry="3" fill="#FFAB40"/>
+    <ellipse cx="42" cy="58" rx="6" ry="3" fill="#FFAB40"/>
+  </svg>
+);
+
 // ===== THEMES =====
 const THEMES={
-  calm:   {name:'Calm',  emoji:'☁️', primary:'#8E86F5',mid:'#DCD6FF',pl:'#DCD6FF',pale:'#F6F8FC',border:'#EEF0F8',bg:'#FFFFFF',card:'#F6F8FC',text:'#3B3B4F',muted:'#8A8A9E',shadow:'0 2px 16px rgba(142,134,245,0.08)',r:'20px',rs:'12px',grad:'linear-gradient(135deg,#8E86F5,#B8B3FF)'},
+  calm:   {name:'Calm',  emoji:'☁️', primary:'#8E86F5',mid:'#DCD6FF',pl:'#F0EEFF',pale:'#F6F8FC',border:'#ECEAF5',bg:'#FCFCFF',card:'#FFFFFF',text:'#34334F',muted:'#8A8A9E',shadow:'0 2px 16px rgba(142,134,245,0.07)',r:'28px',rs:'20px',grad:'linear-gradient(135deg,#8E86F5,#B8B3FF)'},
   focus:  {name:'Focus', emoji:'✨', primary:'#374151',mid:'#6B7280',pl:'#F3F4F6',pale:'#F9FAFB',border:'#E5E7EB',bg:'#FAFAFA',card:'#FFFFFF',text:'#111827',muted:'#9CA3AF',shadow:'0 2px 20px rgba(0,0,0,.07)',r:'16px',rs:'10px',grad:'linear-gradient(145deg,#374151,#6B7280)'},
   bloom:  {name:'Bloom', emoji:'🌸', primary:'#EC4899',mid:'#F9A8D4',pl:'#FCE7F3',pale:'#FDF2F8',border:'#FBCFE8',bg:'#FFF5FA',card:'#FFFFFF',text:'#4A1942',muted:'#C084A0',shadow:'0 2px 20px rgba(236,72,153,.10)',r:'22px',rs:'16px',grad:'linear-gradient(145deg,#F472B6,#FB923C)'},
   forest: {name:'Forest',emoji:'🌿', primary:'#059669',mid:'#34D399',pl:'#D1FAE5',pale:'#ECFDF5',border:'#A7F3D0',bg:'#F0FDF8',card:'#FFFFFF',text:'#1A3D2B',muted:'#6EAF90',shadow:'0 2px 20px rgba(5,150,105,.09)',r:'18px',rs:'12px',grad:'linear-gradient(145deg,#10B981,#34D399)'},
@@ -1056,7 +1111,7 @@ function MonthCalendar({events,onSelectDate,selectedDate}){
 }
 
 // ===== DAY VIEW =====
-function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips,onToggleSkip,onCompleteBlock,condition='normal'}){
+function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips,onToggleSkip,onCompleteBlock,condition='normal',onConditionChange}){
   const d=new Date(dateStr+'T00:00:00');
   const dow=d.getDay();
   const isToday=dateStr===today();
@@ -1090,6 +1145,96 @@ function DayView({dateStr,data,onBack,onAddEvent,onOpenPomodoro,onDelEvent,skips
   const now=new Date();
   const nowMin=now.getHours()*60+now.getMinutes();
   const showNow=isToday&&nowMin>=TS&&nowMin<TE;
+
+  // ===== TODAY SCREEN (airy redesign) — shown on the Today tab (no back button) =====
+  const[recIdxT,setRecIdxT]=React.useState(0);
+  if(!onBack){
+    // hero: minutes until next block
+    const upcoming=[...dayFixed,...dayEvents]
+      .map(b=>({at:b.startTime??b.windowStart,name:b.name}))
+      .filter(b=>b.at>nowMin).sort((a,b)=>a.at-b.at);
+    const nextBlock=upcoming[0];
+    const gap=isToday&&nextBlock?nextBlock.at-nowMin:null;
+    // recommendations
+    const bigSlots=slots.filter(s=>s.dur>=20);
+    const bigSlot=bigSlots.length?bigSlots.reduce((a,b)=>b.dur>a.dur?b:a,bigSlots[0]):null;
+    const recs=bigSlot?suggestFor(bigSlot,data.tasks,condition).slice(0,3):[];
+    const selIdx=recs.length?recIdxT%recs.length:0;
+    const selTask=recs[selIdx];
+    // today's schedule (sorted)
+    const schedule=[...allBlocks].sort((a,b)=>(a.startTime??a.windowStart)-(b.startTime??b.windowStart));
+    return(
+      <div className="td-wrap">
+        {/* Section 1: hero */}
+        <div className="td-hero">
+          <div>
+            <div className="td-hero-label">次の予定まで</div>
+            <div className="td-hero-num">
+              {gap!=null?gap:(slots.length?slots[0].dur:0)}<span className="td-hero-unit">分</span>
+            </div>
+            <div className="td-hero-sub">
+              {gap!=null&&nextBlock
+                ? `${fmt(nextBlock.at)}〜 ${nextBlock.name}`
+                : slots.length?`空き ${fmt(slots[0].start)}〜${fmt(slots[0].end)}`:'今日はゆっくり過ごそう'}
+            </div>
+          </div>
+          <PenguinSVG size={64}/>
+        </div>
+
+        {/* Section 2: recommended tasks */}
+        {recs.length>0&&(
+          <div className="td-section">
+            <div className="td-seclabel">おすすめのタスク ✦</div>
+            {recs.map((t,i)=>(
+              <div key={t.id} className={`td-rec${i===selIdx?' sel':''}`} onClick={()=>setRecIdxT(i)}>
+                <div className="td-radio">{i===selIdx&&<div className="td-radio-dot"/>}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div className="td-rec-name">{t.name}</div>
+                  <div className="td-rec-cat">{t.category}</div>
+                </div>
+                <span className="td-dur">{t.timeMode==='open'?'コツコツ':t.maxDur+'分'}</span>
+                <button className="td-do" onClick={e=>{e.stopPropagation();onOpenPomodoro(t);}}>やる</button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Section 3: action buttons */}
+        <div className="td-actions">
+          <button className="td-btn-main" onClick={()=>onOpenPomodoro(selTask||null)}>このタスクをやる ▶</button>
+          {recs.length>1&&<button className="td-btn-sub" onClick={()=>setRecIdxT(p=>(p+1)%recs.length)}>別の候補を見る</button>}
+          <button className="td-btn-sub" onClick={()=>onOpenPomodoro(null)}>今は休む ☕</button>
+        </div>
+
+        {/* Section 4: today's schedule */}
+        {schedule.length>0&&(
+          <div className="td-section">
+            <div className="td-seclabel">今日の予定</div>
+            {schedule.map((b,i)=>{
+              const s=b.startTime??b.windowStart, e=b.endTime??(b.windowStart+(b.duration||0));
+              return(
+                <div key={i} className="td-ev">
+                  <span className="td-ev-time">{fmt(s)} – {fmt(e)}</span>
+                  <span className="td-ev-name">{b.name}</span>
+                  <span className="td-ev-tag">{b.category}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Section 5: condition */}
+        <div className="td-section">
+          <div className="td-cond">
+            <span className="td-cond-label">今の状態</span>
+            {[['energetic','元気'],['normal','普通'],['tired','疲れ']].map(([v,l])=>(
+              <button key={v} className={`td-cond-btn${condition===v?' on':''}`} onClick={()=>onConditionChange&&onConditionChange(v)}>{l}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return(
     <div>
@@ -2373,12 +2518,12 @@ function App(){
                         const freeSlots=getFreeSlots(allBlocks);
                         if(!freeSlots.length)return null;
                         return(
-                          <div style={{marginTop:16}}>
-                            <div style={{fontSize:13,fontWeight:700,color:'#3B3B4F',marginBottom:8}}>空き時間</div>
+                          <div style={{marginTop:24}}>
+                            <div style={{fontSize:12,fontWeight:700,color:'var(--sub)',letterSpacing:'0.06em',textTransform:'uppercase',marginBottom:12}}>空き時間</div>
                             {freeSlots.map((slot,i)=>(
-                              <div key={i} style={{display:'flex',alignItems:'center',padding:'10px 0',borderBottom:'1px solid #EEF0F8'}}>
-                                <span style={{fontSize:14,color:'#3B3B4F',flex:1}}>{fmt(slot.start)} - {fmt(slot.end)}</span>
-                                <span style={{fontSize:13,fontWeight:700,color:'#8E86F5'}}>{slot.dur}分</span>
+                              <div key={i} style={{display:'flex',alignItems:'center',padding:'12px 0',borderBottom:'1px solid var(--border)'}}>
+                                <span style={{fontSize:14,color:'var(--text)',flex:1}}>{fmt(slot.start)} - {fmt(slot.end)}</span>
+                                <span style={{fontSize:14,fontWeight:700,color:'var(--primary)'}}>{slot.dur}分</span>
                               </div>
                             ))}
                           </div>
